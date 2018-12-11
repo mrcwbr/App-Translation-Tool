@@ -16,12 +16,12 @@
             <th scope="col">Name</th>
         </tr>
         </thead>
-        <tbody>
+        <tbody id="component-table-body">
         <tr>
             <td></td>
-            <td><input class="form-control" type="text" placeholder="e. g. Profil Controller"></td>
+            <td><input class="form-control" id="new-component-name" type="text" placeholder="e. g. Profil Controller"></td>
             <td>
-                <button type="button" class="btn btn-success"><i class="fas fa-plus-circle"></i></button>
+                <button type="button" class="btn btn-success" id="add-button"><i class="fas fa-plus-circle"></i></button>
             </td>
         </tr>
 
@@ -66,6 +66,39 @@
 
 {% block script %}
     <script type="text/javascript">
+        $("#add-button").click(function (e) {
+            let name = $("#new-component-name").val();
+
+            let req = $.ajax({
+                method: "POST",
+                url: "/component",
+                data: {name: name}
+            });
+
+
+            req.done(function (msg) {
+                if(msg.success === true){
+                    $("#new-component-name").val("");
+                    let id = msg.id;
+
+                    $("#component-table-body tr:first").after('' +
+                        '              <tr id="component-row-' + id + '">\n' +
+                        '                <td>' + id + '</td>\n' +
+                        '                <td>\n' +
+                        '                    <input class="form-control"\n' +
+                        '                           id="component-input-name-' + id + '"\n' +
+                        '                           type="text"\n' +
+                        '                           placeholder="Login Controller"\n' +
+                        '                           value="' + name + '"\n' +
+                        '                           disabled="disabled">\n' +
+                        '                </td>\n' +
+                        '                <td></td>\n' +
+                        '            </tr>');
+
+                } else alert("Component's name is shorter than 3 characters or already in usage.");
+            });
+        });
+
         $(".del-button").click(function (e) {
             let id = $(this).data("value");
 

@@ -72,19 +72,6 @@ a:hover,
     min-height: calc(100vh - 162px);
 }
 
-.add-language-button{
-    width:80px;
-    height:80px;
-    transition: all .2s;
-    margin-top:150px;
-    color: #c1c1c1;
-    text-decoration: none;
-}
-
-.add-language-button:hover{
-    color:#289BC8;
-}
-
 footer{
     text-align: center;
     background-color:#282a2b;

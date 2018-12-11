@@ -38,10 +38,13 @@
         <div class="col-4">
             <div class="card">
                 <div class="card-header">
-                    Number of translations
+                    Number of languages
                 </div>
                 <div class="card-body">
-                   <h1 class="text-center" style="font-size: 6.5rem; font-weight: 300">{{ number_of_translations }}</h1>
+                   <h1 class="text-center" style="font-size: 6.5rem; font-weight: 300">{{ number_of_languages }}</h1>
+                </div>
+                <div class="card-footer">
+                    <a href="" class="card-link" data-toggle="modal" data-target="#add-lang-modal"><i class="fas fa-plus-circle mr-2"></i>Add new</a>
                 </div>
             </div>
         </div>
@@ -80,11 +83,6 @@
             </div>
         {% endfor %}
 
-        <a href="#" class="add-language-button ml-5" data-toggle="modal" data-target="#add-lang-modal">
-            <i class="fas fa-plus-circle mb-2" style="font-size:80px" data-toggle="tooltip" data-placement="bottom"
-               title="Add language"></i>
-        </a>
-    </div>
     </div>
 
     <!-- Modal -->

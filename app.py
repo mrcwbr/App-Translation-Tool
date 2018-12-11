@@ -10,7 +10,6 @@ app.config['SQLALCHEMY_DATABASE_URI'] = "sqlite:////" + local_database_path.abso
 db = SQLAlchemy(app)
 
 
-# TODO: Create extra File for database path, important add this to gitignore
 # TODO: Project sturucture
 # TODO: Stand als datum in oberste zeile als kommentar exportieren
 # TODO: Default Language angeben -> if not translated completely no export or error message
@@ -20,13 +19,13 @@ def root():
     p = Project.query.first()
     number_of_identifiers = len(Identifier.query.filter_by(project_id=p.id).all())
     number_of_components = len(Component.query.filter_by(project_id=p.id).all())
-    number_of_translations = len(Translation.query.join(Identifier).filter(Identifier.project_id == p.id).all())
+    number_of_languages = len(LanguageProjectRelation.query.filter(LanguageProjectRelation.project_id == p.id).all())
 
     return render_template('root.html',
                            project=p,
                            number_of_identifiers=number_of_identifiers,
                            number_of_components=number_of_components,
-                           number_of_translations=number_of_translations)
+                           number_of_languages=number_of_languages)
 
 
 @app.route('/identifier')
@@ -40,7 +39,7 @@ def identifier():
 @app.route('/component', methods=['GET'])
 def component():
     p = Project.query.first()
-    c = Component.query.filter_by(project_id=p.id).all()
+    c = Component.query.filter_by(project_id=p.id).order_by(Component.id.desc()).all()
 
     return render_template('components.html', project=p, components=c)
 
@@ -55,6 +54,9 @@ def modify_component():
             return jsonify({'success': False})
 
         p = Project.query.first()
+
+        if len(Component.query.filter(Component.project_id == p.id, Component.name == name).all()) != 0 or len(name) < 3:
+            return jsonify({'success': False})
 
         c = Component(name=name, project_id=p.id)
         db.session.add_all([c])
@@ -92,7 +94,7 @@ if __name__ == '__main__':
     app.run()
 
 
-class LanguageProjectRelation(db.Model): # https://gist.github.com/kirang89/10030736
+class LanguageProjectRelation(db.Model):  # https://gist.github.com/kirang89/10030736
     lang_code = db.Column(db.String(5), db.ForeignKey('language.code'), primary_key=True)
     project_id = db.Column(db.Integer, db.ForeignKey('project.id'), primary_key=True)
     is_default = db.Column(db.Boolean, default=False, nullable=False)
