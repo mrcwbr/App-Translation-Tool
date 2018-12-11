@@ -1,0 +1,28 @@
+#Start: Added the local_database_path.py so every user has to define the the local path to the shared
+/helpers/local_database_path.py
+#END
+
+.DS_Store
+.env
+.flaskenv
+*.pyc
+*.pyo
+env/
+env*
+dist/
+build/
+*.egg
+*.egg-info/
+_mailinglist
+.tox/
+.cache/
+.pytest_cache/
+.idea/
+docs/_build/
+venv/
+
+# Coverage reports
+htmlcov/
+.coverage
+.coverage.*
+*,cover

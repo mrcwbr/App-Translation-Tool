@@ -1,0 +1,65 @@
+{% extends "layout.html" %}
+
+{% block title %}Identifiers{% endblock %}
+
+{% block head %}
+    {{ super() }}
+    <!--other stuff here-->
+{% endblock %}
+
+{% block content %}
+    <h5><img src="{{ language.flag_image_link }}" style="height: 16px"> {{ language.name }} Translations</h5>
+    <a href="#" class="card-link redTextColor" data-toggle="tooltip" data-placement="bottom"
+                           title="Translation isn't complete"><i class="fas fa-file-export mr-2"></i>Export</a>
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <th scope="col">Timestamp</th>
+            <th scope="col">ID</th>
+            <th scope="col">Description</th>
+            <th scope="col">Translation</th>
+            <th scope="col">Action</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td></td>
+            <td>
+                <select class="form-control">
+                    <option>LoginVC</option>
+                </select>
+            </td>
+            <td>
+                <b>Component</b><br/>
+                Description
+            </td>
+            <td><input class="form-control" type="text" placeholder="Translation"></td>
+            <td>
+                <button type="button" class="btn btn-success"><i class="fas fa-plus-circle"></i></button>
+            </td>
+        </tr>
+
+        {% for i in identifiers %}
+            <tr>
+            <td>
+                {{ i.timestamp }}
+            </td>
+            <td>
+                <select class="form-control">
+                    <option>LoginVC</option>
+                </select>
+            </td>
+            <td>
+                <b>Component</b><br/>
+                Description
+            </td>
+            <td><input class="form-control" type="text" placeholder="Translation"></td>
+            <td>
+                <button type="button" class="btn btn-success"><i class="fas fa-plus-circle"></i></button>
+            </td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+{% endblock %}

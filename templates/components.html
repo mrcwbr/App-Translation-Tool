@@ -1,0 +1,100 @@
+{% extends "layout.html" %}
+
+{% block title %}Components{% endblock %}
+
+{% block head %}
+    {{ super() }}
+    <!--other stuff here-->
+{% endblock %}
+
+{% block content %}
+    <h5>Components:</h5>
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <th scope="col">ID</th>
+            <th scope="col">Name</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td></td>
+            <td><input class="form-control" type="text" placeholder="e. g. Profil Controller"></td>
+            <td>
+                <button type="button" class="btn btn-success"><i class="fas fa-plus-circle"></i></button>
+            </td>
+        </tr>
+
+        {% for c in components %}
+            <tr id="component-row-{{ c.id }}">
+                <td>{{ c.id }}</td>
+                <td>
+                    <input class="form-control"
+                           id="component-input-name-{{ c.id }}"
+                           type="text"
+                           placeholder="Login Controller"
+                           value="{{ c.name }}"
+                           disabled="disabled">
+                </td>
+                <td>
+                    <button type="button"
+                            id="component-button-edit-{{ c.id }}"
+                            class="btn btn-warning edit-button"
+                            data-value="{{ c.id }}">
+                        <i class="far fa-edit"></i>
+                    </button>
+                    <button type="button"
+                            id="com-button-{{ c.id }}"
+                            class="btn btn-success com-button"
+                            data-value="{{ c.id }}"
+                            style="display: none">
+                        <i class="far fa-check-circle"></i>
+                    </button>
+                    <button type="button"
+                            id="del-button-{{ c.id }}"
+                            class="btn btn-danger del-button"
+                            data-value="{{ c.id }}">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+{% endblock %}
+
+{% block script %}
+    <script type="text/javascript">
+        $(".del-button").click(function (e) {
+            let id = $(this).data("value");
+
+            let check = confirm("Do you really want to delete the Component with the ID: "+id);
+            if (check === true) {
+                let req = $.ajax({
+                    method: "DELETE",
+                    url: "/component",
+                    data: {id: id}
+                });
+
+
+                req.done(function (msg) {
+                    console.log(msg.toString());
+                    $("#component-row-" + id).remove();
+                });
+            }
+        });
+
+        $(".edit-button").click(function (e) {
+            let id = $(this).data("value");
+
+            $("#del-button-"+id).toggle();
+            $("#com-button-"+id).toggle();
+
+            let nameTF = $("#component-input-name-"+id);
+            if(nameTF.attr("disabled") === 'disabled') nameTF.prop("disabled", false);
+            else nameTF.prop("disabled", 'disabled');
+
+        });
+    </script>
+{% endblock %}

@@ -1,0 +1,93 @@
+/*Text-Color*/
+a,
+.blueTextColor{
+    color: #289BC8;
+}
+.turquoiseTextColor{
+    color: #01ADA1 !important;
+}
+.greenTextColor{
+    color: #3DC585;
+}
+.yellowTextColor{
+    color: #DACA41 !important;
+}
+.redTextColor{
+    color: #D8531B !important;
+}
+.whiteTextColor{
+    color: #FFFFFF
+}
+
+a:hover,
+.fake-link:hover{
+    color: #006d97;
+    text-decoration: underline;
+}
+
+.fake-link{
+    color: #289BC8;
+    cursor: pointer;
+}
+
+/*Background-Color*/
+.blueBgColor{
+    background-color: #289BC8;
+}
+.turquoiseBgColor{
+    background-color: #01ADA1 !important;
+}
+.greenBgColor{
+    background-color: #3DC585 !important;
+}
+.lightGreenBgColor{
+    background-color: #99DB55;
+}
+.yellowBgColor{
+    background-color: #DACA41 !important;
+}
+.orangeBgColor{
+    background-color: #DCA838;
+}
+.redBgColor{
+    background-color: #D8531B;
+}
+
+.whiteBGColor{
+    background-color: #FFFFFF !important;
+}
+
+.btn-primary{
+    transition: all .2s;
+    background-color: #289BC8 !important;
+    border-color: #006d97; /*darkblue*/
+}
+
+.btn-primary:hover{
+    background-color: #006d97 !important; /*darkblue*/
+}
+
+/*Content*/
+.container{
+    min-height: calc(100vh - 162px);
+}
+
+.add-language-button{
+    width:80px;
+    height:80px;
+    transition: all .2s;
+    margin-top:150px;
+    color: #c1c1c1;
+    text-decoration: none;
+}
+
+.add-language-button:hover{
+    color:#289BC8;
+}
+
+footer{
+    text-align: center;
+    background-color:#282a2b;
+    padding:18px;
+    color:#FFFFFF;
+}

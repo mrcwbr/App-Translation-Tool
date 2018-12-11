@@ -1,0 +1,58 @@
+{% extends "layout.html" %}
+
+{% block title %}Identifiers{% endblock %}
+
+{% block head %}
+    {{ super() }}
+    <!--other stuff here-->
+{% endblock %}
+
+{% block content %}
+    <h5>Identifiers:</h5>
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <th scope="col">ID</th>
+            <th scope="col">Component</th>
+            <th scope="col">Description</th>
+            <th scope="col">Action</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <th scope="row"><input class="form-control" type="text" placeholder="Identifier"></th>
+            <td>
+                <select class="form-control">
+                    <option>LoginVC</option>
+                </select>
+            </td>
+            <td><input class="form-control" type="text" placeholder="Description"></td>
+            <td>
+                <button type="button" class="btn btn-success"><i class="fas fa-plus-circle"></i></button>
+            </td>
+        </tr>
+
+        {% for i in identifiers %}
+            <tr>
+                <th scope="row">
+                    <input class="form-control" type="text" placeholder="Default input" value="{{ i.id }}"
+                                       disabled>
+                </th>
+                <td>
+                <select class="form-control">
+                    <option>LoginVC</option>
+                </select>
+            </td>
+                <td>
+                    <input class="form-control" type="text" placeholder="Default input" value="{{ i.description }}"
+                           disabled></td>
+                <td>
+                    <button type="button" class="btn btn-warning"><i class="far fa-edit"></i></button>
+                    <button type="button" class="btn btn-danger"><i class="fas fa-trash"></i></button>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+{% endblock %}
