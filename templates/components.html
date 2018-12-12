@@ -79,21 +79,12 @@
             req.done(function (msg) {
                 if(msg.success === true){
                     $("#new-component-name").val("");
-                    let id = msg.id;
+                    let generated_id = msg.newComp.id;
+                    let generated_name = msg.newComp.name;
 
-                    $("#component-table-body tr:first").after('' +
-                        '              <tr id="component-row-' + id + '">\n' +
-                        '                <td>' + id + '</td>\n' +
-                        '                <td>\n' +
-                        '                    <input class="form-control"\n' +
-                        '                           id="component-input-name-' + id + '"\n' +
-                        '                           type="text"\n' +
-                        '                           placeholder="Login Controller"\n' +
-                        '                           value="' + name + '"\n' +
-                        '                           disabled="disabled">\n' +
-                        '                </td>\n' +
-                        '                <td></td>\n' +
-                        '            </tr>');
+                    let input = '<input class="form-control" type="text" value="'+ generated_name + '" disabled="disabled">';
+
+                    $("#component-table-body tr:first").after('<tr><td>' + generated_id + '</td><td>' + input + '</td><td></td></tr>');
 
                 } else alert("Component's name is shorter than 3 characters or already in usage.");
             });
