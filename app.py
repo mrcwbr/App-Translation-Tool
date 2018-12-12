@@ -90,6 +90,12 @@ def translation(language_code):
     return render_template('translation.html', project=p, translations=t, language=language)
 
 
+@app.errorhandler(404)
+def page_not_found(e):
+    p = Project.query.first()
+    return render_template('404.html', project=p), 404
+
+
 if __name__ == '__main__':
     app.run()
 

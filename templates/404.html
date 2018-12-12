@@ -1,0 +1,15 @@
+{% extends "layout.html" %}
+
+{% block title %}Page not found{% endblock %}
+
+{% block head %}
+    {{ super() }}
+    <!--other stuff here-->
+{% endblock %}
+
+{% block content %}
+    <h5>404 Fehler:</h5>
+    <img src="{{ url_for('static', filename='img/404.jpg') }}" style="width: 500px; margin-left:auto; margin-right:auto; display:block;"
+             alt="404 Error" title="404 Error" class="mb-5"/>
+
+{% endblock %}
