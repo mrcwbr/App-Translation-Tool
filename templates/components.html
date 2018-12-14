@@ -21,7 +21,7 @@
             <td></td>
             <td><input class="form-control" id="new-component-name" type="text" placeholder="e. g. Profil Controller"></td>
             <td>
-                <button type="button" class="btn btn-success" id="add-button"><i class="fas fa-plus-circle"></i></button>
+                <button type="button" class="btn btn-success" id="component-add-button"><i class="fas fa-plus-circle"></i></button>
             </td>
         </tr>
 
@@ -66,17 +66,15 @@
 
 {% block script %}
     <script type="text/javascript">
-        $("#add-button").click(function (e) {
+        //ADD
+        $("#component-add-button").click(function (e) {
             let name = $("#new-component-name").val();
 
-            let req = $.ajax({
+            $.ajax({
                 method: "POST",
                 url: "/component",
                 data: {name: name}
-            });
-
-
-            req.done(function (msg) {
+            }).done(function (msg) {
                 if(msg.success === true){
                     $("#new-component-name").val("");
                     let generated_id = msg.newComp.id;
@@ -90,25 +88,23 @@
             });
         });
 
+        //DELETE
         $(".del-button").click(function (e) {
             let id = $(this).data("value");
 
             let check = confirm("Do you really want to delete the Component with the ID: "+id);
             if (check === true) {
-                let req = $.ajax({
+                $.ajax({
                     method: "DELETE",
                     url: "/component",
                     data: {id: id}
-                });
-
-
-                req.done(function (msg) {
-                    console.log(msg.toString());
+                }).done(function (msg) {
                     $("#component-row-" + id).remove();
                 });
             }
         });
 
+        //EDIT (= Update Preparation)
         $(".edit-button").click(function (e) {
             let id = $(this).data("value");
 
@@ -118,7 +114,33 @@
             let nameTF = $("#component-input-name-"+id);
             if(nameTF.attr("disabled") === 'disabled') nameTF.prop("disabled", false);
             else nameTF.prop("disabled", 'disabled');
+        });
 
+        //Update
+        $(".com-button").click(function (e) {
+            let id = $(this).data("value");
+            let nameTextField = $("#component-input-name-"+id);
+            let name = nameTextField.val();
+
+            $.ajax({
+                method: "PUT",
+                url: "/component",
+                data: {name: name, id: id}
+            }).done(function (msg) {
+                if(msg.success === true){
+                    nameTextField.val(msg.updateComp.name);
+                    nameTextField.prop("disabled", 'disabled');
+                    $("#del-button-"+id).toggle();
+                    $("#com-button-"+id).toggle();
+
+                    //Show alert TODO: add in global js
+                    $("#main-alert").addClass("alert-success");
+                    $("#main-alert-text").text("Component successfully updated.");
+                    $("#main-alert").fadeTo(2000, 500).slideUp(500, function () {
+                        $("#main-alert").slideUp(500);
+                    });
+                } else alert("Component's name is shorter than 3 characters or already in usage.");
+            });
         });
     </script>
 {% endblock %}

@@ -4,6 +4,7 @@ from helpers.database import db
 from model.models import Project, Identifier, Component, LanguageProjectRelation, Language
 
 from route.component import comp  # Imported object import must be a other name than file
+from route.identifier import ident
 
 app = Flask(__name__)
 
@@ -12,6 +13,7 @@ app.config['SQLALCHEMY_DATABASE_URI'] = "sqlite:////" + local_database_path.abso
 
 db.init_app(app)
 app.register_blueprint(comp)
+app.register_blueprint(ident)
 
 
 # TODO: Project sturucture
@@ -30,14 +32,6 @@ def root():
                            number_of_identifiers=number_of_identifiers,
                            number_of_components=number_of_components,
                            number_of_languages=number_of_languages)
-
-
-@app.route('/identifier')
-def identifier():
-    p = Project.query.first()
-    i = Identifier.query.filter_by(project_id=p.id).all()
-
-    return render_template('identifiers.html', project=p, identifiers=i)
 
 
 @app.route('/translation/<language_code>')

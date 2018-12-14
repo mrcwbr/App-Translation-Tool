@@ -67,9 +67,30 @@ a:hover,
     background-color: #006d97 !important; /*darkblue*/
 }
 
+.navbar{
+    border-bottom: 1px solid #e5e5e5;
+}
+
 /*Content*/
 .container{
-    min-height: calc(100vh - 162px);
+    min-height: calc(100vh - 159px);
+}
+
+#main-alert.alert{
+    position: absolute;
+    margin-top: -24px;
+    border-radius: 0 0 3px 3px;
+    width: 1110px;
+    padding: 0.5rem 1.25rem;
+    display:none;
+}
+
+#main-alert #close-main-alert{
+    position: absolute;
+    top: 0;
+    right: 0;
+    padding: .5rem 1.25rem;
+    color: inherit;
 }
 
 footer{

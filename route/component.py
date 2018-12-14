@@ -38,10 +38,18 @@ def update_component():
     name = request.form.get('name')
     comp_id = request.form.get('id')
 
-    if not name or not comp_id:
+    if not name or len(name) < 3 or not comp_id:
         return jsonify({'success': False})
 
-    print('TODO')  # TODO add put
+    c = Component.query.filter(Component.id == comp_id).first()
+    check_already_used = Component.query.filter(Component.name == name).all()
+    if not c or check_already_used:
+        return jsonify({'success': False})
+
+    c.name = name
+    db.session.commit()
+
+    return jsonify({'success': True, 'updateComp': c.to_json_dict()})
 
 
 @comp.route('/component', methods=['DELETE'])

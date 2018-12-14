@@ -1,6 +1,7 @@
 import datetime
 from helpers.database import db
 
+
 class LanguageProjectRelation(db.Model):  # https://gist.github.com/kirang89/10030736
     lang_code = db.Column(db.String(5), db.ForeignKey('language.code'), primary_key=True)
     project_id = db.Column(db.Integer, db.ForeignKey('project.id'), primary_key=True)
@@ -54,7 +55,8 @@ class Component(db.Model):
 
 
 class Identifier(db.Model):
-    id = db.Column(db.String(255), primary_key=True)
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(255), nullable=False)
     description = db.Column(db.String(100), nullable=True)
 
     project_id = db.Column(db.Integer, db.ForeignKey('project.id'), nullable=False)
@@ -66,13 +68,23 @@ class Identifier(db.Model):
     def __repr__(self):
         return '<Identifier %s>' % self.id
 
+    def to_json_dict(self):
+        print(self.component)
+        return {
+            'id': self.id,
+            'name': self.name,
+            'componentID': self.component_id,
+            #'componentName': self.component.name, TODO: return component name
+            'description': self.description
+        }
+
 
 class Translation(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     text = db.Column(db.Text, nullable=False)
     timestamp = db.Column(db.DATETIME, default=datetime.datetime.utcnow())
 
-    identifier_id = db.Column(db.String(255), db.ForeignKey('identifier.id'), nullable=False)
+    identifier_id = db.Column(db.Integer, db.ForeignKey('identifier.id'), nullable=False)
     identifier = db.relationship('Identifier', backref=db.backref('translations', lazy=True))
 
     language_code = db.Column(db.String(5), db.ForeignKey('language.code'), nullable=False)

@@ -13,46 +13,138 @@
         <thead>
         <tr>
             <th scope="col">ID</th>
+            <th scope="col">Name</th>
             <th scope="col">Component</th>
             <th scope="col">Description</th>
             <th scope="col">Action</th>
         </tr>
         </thead>
-        <tbody>
+        <tbody id="identifier-table-body">
         <tr>
-            <th scope="row"><input class="form-control" type="text" placeholder="Identifier"></th>
+            <td><i>autogen</i></td>
+            <td scope="row">
+                <input class="form-control"
+                       id="new-identifier-name"
+                       type="text"
+                       placeholder="[Example Class]">
+            </td>
             <td>
-                <select class="form-control">
-                    <option>LoginVC</option>
+                <select class="form-control" id="new-identifier-component">
+                    <option value="" selected></option>
+                    {% for c in all_components %}
+                        <option value="{{ c.id }}">{{ c.name }}</option>
+                    {% endfor %}
                 </select>
             </td>
-            <td><input class="form-control" type="text" placeholder="Description"></td>
             <td>
-                <button type="button" class="btn btn-success"><i class="fas fa-plus-circle"></i></button>
+                <input class="form-control"
+                       id="new-identifier-description"
+                       type="text">
+            </td>
+            <td>
+                <button type="button"
+                        class="btn btn-success"
+                        id="identifier-add-button">
+                    <i class="fas fa-plus-circle"></i>
+                </button>
             </td>
         </tr>
 
         {% for i in identifiers %}
-            <tr>
-                <th scope="row">
-                    <input class="form-control" type="text" placeholder="Default input" value="{{ i.id }}"
-                                       disabled>
-                </th>
+            <tr id="identifier-row-{{ i.id }}">
+                <td>{{ i.id }}</td>
+                <td scope="row">
+                    <input class="form-control"
+                           type="text"
+                           value="{{ i.name }}"
+                           disabled>
+                </td>
                 <td>
-                <select class="form-control">
-                    <option>LoginVC</option>
+                <select class="form-control" disabled="disabled">
+                    <option value="" {% if i.component_id %}selected{% endif %}></option>
+                    {% for c in all_components %}
+                        <option value="{{ c.id }}" {% if i.component_id == c.id %}selected{% endif %}>{{ c.name }}</option>
+                    {% endfor %}
                 </select>
             </td>
                 <td>
-                    <input class="form-control" type="text" placeholder="Default input" value="{{ i.description }}"
+                    <input class="form-control"
+                           type="text"
+                           value="{{ i.description if i.description}}"
                            disabled></td>
                 <td>
                     <button type="button" class="btn btn-warning"><i class="far fa-edit"></i></button>
-                    <button type="button" class="btn btn-danger"><i class="fas fa-trash"></i></button>
+                    <button type="button"
+                            id="del-button-{{ i.id }}"
+                            data-value="{{ i.id }}"
+                            class="btn btn-danger del-button">
+                        <i class="fas fa-trash"></i>
+                    </button>
                 </td>
             </tr>
         {% endfor %}
         </tbody>
     </table>
+{% endblock %}
 
+{% block script %}
+    <script type="text/javascript">
+        //ADD
+        $("#identifier-add-button").click(function (e) {
+            let newIdentNameTF = $("#new-identifier-name");
+            let newIdentCompSelect = $("#new-identifier-component");
+            let newIdentDesTF = $("#new-identifier-description");
+
+            let name = newIdentNameTF.val();
+            let component_id = newIdentCompSelect.val();
+            let description = newIdentDesTF.val();
+
+            $.ajax({
+                method: "POST",
+                url: "/identifier",
+                data: {name: name, component_id: component_id, description: description}
+            }).done(function (msg) {
+                if(msg.success === true){
+                    console.log(msg);
+                    newIdentNameTF.val("");
+                    newIdentCompSelect.val("");
+                    newIdentDesTF.val("");
+
+                    let generatedID = msg.newIdent.id;
+                    let generatedName = msg.newIdent.name;
+                    let generatedCompID = msg.newIdent.componentID;
+                    let generatedDec = msg.newIdent.description;
+
+                    let inputID = '<input class="form-control" type="text" value="'+ generatedName + '" disabled="disabled">';
+                    //TODO: SelectInput
+                    let inputDesc = '<input class="form-control" type="text" value="'+ generatedDec + '" disabled="disabled">';
+
+                    $("#identifier-table-body tr:first").after('<tr>' +
+                        '<td>' + generatedID + '</td>' +
+                        '<td>' + inputID + '</td>' +
+                        '<td>' + generatedCompID + '</td>' +
+                        '<td>' + inputDesc + '</td>' +
+                        '<td></td>' +
+                        '</tr>');
+console.log(123)
+                } else alert("Identifiers's ID is shorter than 3 characters or already in usage.");
+            });
+        });
+
+        //DELETE
+        $(".del-button").click(function (e) {
+            let id = $(this).data("value");
+
+            let check = confirm("Do you really want to delete the identifier with the ID: "+id);
+            if (check === true) {
+                $.ajax({
+                    method: "DELETE",
+                    url: "/identifier",
+                    data: {id: id}
+                }).done(function (msg) {
+                    $("#identifier-row-" + id).remove();
+                });
+            }
+        });
+    </script>
 {% endblock %}
