@@ -5,6 +5,7 @@ from model.models import Project, Identifier, Component, LanguageProjectRelation
 
 from route.component import comp  # Imported object import must be a other name than file
 from route.identifier import ident
+from route.translation import trans
 
 app = Flask(__name__)
 
@@ -14,9 +15,9 @@ app.config['SQLALCHEMY_DATABASE_URI'] = "sqlite:////" + local_database_path.abso
 db.init_app(app)
 app.register_blueprint(comp)
 app.register_blueprint(ident)
+app.register_blueprint(trans)
 
 
-# TODO: Project sturucture
 # TODO: Stand als datum in oberste zeile als kommentar exportieren
 # TODO: Default Language angeben -> if not translated completely no export or error message
 
@@ -32,16 +33,6 @@ def root():
                            number_of_identifiers=number_of_identifiers,
                            number_of_components=number_of_components,
                            number_of_languages=number_of_languages)
-
-
-@app.route('/translation/<language_code>')
-def translation(language_code):
-    language = Language.query.filter_by(code=language_code).first()
-
-    p = Project.query.first()
-    t = Identifier.query.filter_by(project_id=p.id).all()
-
-    return render_template('translation.html', project=p, translations=t, language=language)
 
 
 @app.errorhandler(404)

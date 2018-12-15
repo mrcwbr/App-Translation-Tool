@@ -103,31 +103,32 @@
                 method: "POST",
                 url: "/identifier",
                 data: {name: name, component_id: component_id, description: description}
-            }).done(function (msg) {
-                if(msg.success === true){
-                    console.log(msg);
+            }).done(function (data) {
+                if(data.success === true){
+                    console.log(data);
                     newIdentNameTF.val("");
                     newIdentCompSelect.val("");
                     newIdentDesTF.val("");
 
-                    let generatedID = msg.newIdent.id;
-                    let generatedName = msg.newIdent.name;
-                    let generatedCompID = msg.newIdent.componentID;
-                    let generatedDec = msg.newIdent.description;
+                    let generatedID = data.newIdent.id;
+                    let generatedName = data.newIdent.name;
+                    let generatedCompName = data.newIdent.componentName === null ? '' : data.newIdent.componentName;
+                    let generatedDec = data.newIdent.description === null ? '' : data.newIdent.description;
 
                     let inputID = '<input class="form-control" type="text" value="'+ generatedName + '" disabled="disabled">';
-                    //TODO: SelectInput
+                    let select = '<select class="form-control" disabled="disabled">\n' +
+                        '           <option selected>' + generatedCompName + '</option>' +
+                        '         </select>';
                     let inputDesc = '<input class="form-control" type="text" value="'+ generatedDec + '" disabled="disabled">';
 
                     $("#identifier-table-body tr:first").after('<tr>' +
                         '<td>' + generatedID + '</td>' +
                         '<td>' + inputID + '</td>' +
-                        '<td>' + generatedCompID + '</td>' +
+                        '<td>' + select + '</td>' +
                         '<td>' + inputDesc + '</td>' +
                         '<td></td>' +
                         '</tr>');
-console.log(123)
-                } else alert("Identifiers's ID is shorter than 3 characters or already in usage.");
+                } else alert(data.msg);
             });
         });
 

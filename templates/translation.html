@@ -1,6 +1,6 @@
 {% extends "layout.html" %}
 
-{% block title %}Identifiers{% endblock %}
+{% block title %}{{ language.name }} Translations{% endblock %}
 
 {% block head %}
     {{ super() }}
@@ -8,7 +8,7 @@
 {% endblock %}
 
 {% block content %}
-    <h5><img src="{{ language.flag_image_link }}" style="height: 16px"> {{ language.name }} Translations</h5>
+    <h5><img src="{{ language.flag_image_link }}" style="height: 16px" class="mr-2">{{ language.name }} Translations</h5>
     <a href="#" class="card-link redTextColor" data-toggle="tooltip" data-placement="bottom"
                            title="Translation isn't complete"><i class="fas fa-file-export mr-2"></i>Export</a>
     <table class="table table-striped">

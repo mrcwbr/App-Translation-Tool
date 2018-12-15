@@ -63,7 +63,7 @@ class Identifier(db.Model):
     project = db.relationship('Project', backref=db.backref('identifiers', lazy=True))
 
     component_id = db.Column(db.Integer, db.ForeignKey('component.id'), nullable=True)
-    component = db.relationship('Component', backref=db.backref('identifiers', lazy=True))
+    component = db.relationship('Component', backref=db.backref('identifiers'))
 
     def __repr__(self):
         return '<Identifier %s>' % self.id
@@ -74,7 +74,7 @@ class Identifier(db.Model):
             'id': self.id,
             'name': self.name,
             'componentID': self.component_id,
-            #'componentName': self.component.name, TODO: return component name
+            'componentName': self.component.name if self.component else None,
             'description': self.description
         }
 

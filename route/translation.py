@@ -1,21 +1,23 @@
 from flask import Blueprint, render_template, request, jsonify
 from helpers.database import db
-from model.models import Project, Identifier, Component
+from model.models import Project, Identifier, Language
 
-ident = Blueprint('identifier', __name__)
+trans = Blueprint('translation', __name__)
 
 
-@ident.route('/identifier', methods=['GET'])
-def identifier():
+@trans.route('/translation/<language_code>', methods=['GET'])
+def translation(language_code):
+    language = Language.query.filter_by(code=language_code).first()
+
     p = Project.query.first()
-    i = Identifier.query.filter_by(project_id=p.id).order_by(Identifier.id.desc()).all()
-    all_components = Component.query.filter_by(project_id=p.id).all()
+    t = Identifier.query.filter_by(project_id=p.id).all()
 
-    return render_template('identifiers.html', project=p, identifiers=i, all_components=all_components)
+    return render_template('translation.html', project=p, translations=t, language=language)
 
 
-@ident.route('/identifier', methods=['POST'])
-def add_identifier():
+@trans.route('/translation', methods=['POST'])
+def add_translation():
+    '''
     p = Project.query.first()
     name = request.form.get('name')
     component_id = request.form.get('component_id')
@@ -45,7 +47,8 @@ def add_identifier():
     db.session.add(i)
     db.session.commit()
 
-    return jsonify({'success': True, 'newIdent': i.to_json_dict()})
+    return jsonify({'success': True, 'newIdent': i.to_json_dict()})'''
+    return ''
 
 # TODO: Update
 
@@ -69,10 +72,10 @@ def update_component():
 
     return jsonify({'success': True, 'updateComp': c.to_json_dict()})
 
-'''
 
 
-@ident.route('/identifier', methods=['DELETE'])
+
+@trans.route('/translation', methods=['DELETE'])
 def delete_component():
     ident_id = request.form.get('id')
 
@@ -83,3 +86,4 @@ def delete_component():
     db.session.delete(i)
     db.session.commit()
     return jsonify({'success': True})
+'''
