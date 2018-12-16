@@ -8,83 +8,88 @@
 {% endblock %}
 
 {% block content %}
-    <h5>Identifiers:</h5>
-    <table class="table table-striped">
-        <thead>
-        <tr>
-            <th scope="col">ID</th>
-            <th scope="col">Name</th>
-            <th scope="col">Component</th>
-            <th scope="col">Description</th>
-            <th scope="col">Action</th>
-        </tr>
-        </thead>
-        <tbody id="identifier-table-body">
-        <tr>
-            <td><i>autogen</i></td>
-            <td scope="row">
-                <input class="form-control"
-                       id="new-identifier-name"
-                       type="text"
-                       placeholder="[Example Class]">
-            </td>
-            <td>
-                <select class="form-control" id="new-identifier-component">
-                    <option value="" selected></option>
-                    {% for c in all_components %}
-                        <option value="{{ c.id }}">{{ c.name }}</option>
-                    {% endfor %}
-                </select>
-            </td>
-            <td>
-                <input class="form-control"
-                       id="new-identifier-description"
-                       type="text">
-            </td>
-            <td>
-                <button type="button"
-                        class="btn btn-success"
-                        id="identifier-add-button">
-                    <i class="fas fa-plus-circle"></i>
-                </button>
-            </td>
-        </tr>
-
-        {% for i in identifiers %}
-            <tr id="identifier-row-{{ i.id }}">
-                <td>{{ i.id }}</td>
+    <div class="card">
+        <div class="card-header">
+            <h5>Identifiers</h5>
+        </div>
+        <table class="table table-striped">
+            <thead>
+            <tr>
+                <th scope="col">ID</th>
+                <th scope="col">Name</th>
+                <th scope="col">Component</th>
+                <th scope="col">Description</th>
+                <th scope="col">Action</th>
+            </tr>
+            </thead>
+            <tbody id="identifier-table-body">
+            <tr>
+                <td><i>auto</i></td>
                 <td scope="row">
                     <input class="form-control"
+                           id="new-identifier-name"
                            type="text"
-                           value="{{ i.name }}"
-                           disabled>
+                           placeholder="[Example Class]">
                 </td>
                 <td>
-                <select class="form-control" disabled="disabled">
-                    <option value="" {% if i.component_id %}selected{% endif %}></option>
-                    {% for c in all_components %}
-                        <option value="{{ c.id }}" {% if i.component_id == c.id %}selected{% endif %}>{{ c.name }}</option>
-                    {% endfor %}
-                </select>
-            </td>
+                    <select class="form-control" id="new-identifier-component">
+                        <option value="" selected></option>
+                        {% for c in all_components %}
+                            <option value="{{ c.id }}">{{ c.name }}</option>
+                        {% endfor %}
+                    </select>
+                </td>
                 <td>
                     <input class="form-control"
-                           type="text"
-                           value="{{ i.description if i.description}}"
-                           disabled></td>
+                           id="new-identifier-description"
+                           type="text">
+                </td>
                 <td>
-                    <button type="button" class="btn btn-warning"><i class="far fa-edit"></i></button>
                     <button type="button"
-                            id="del-button-{{ i.id }}"
-                            data-value="{{ i.id }}"
-                            class="btn btn-danger del-button">
-                        <i class="fas fa-trash"></i>
+                            class="btn btn-success"
+                            id="identifier-add-button">
+                        <i class="fas fa-plus-circle"></i>
                     </button>
                 </td>
             </tr>
-        {% endfor %}
-        </tbody>
-    </table>
+
+            {% for i in identifiers %}
+                <tr id="identifier-row-{{ i.id }}">
+                    <td>{{ i.id }}</td>
+                    <td scope="row">
+                        <input class="form-control"
+                               type="text"
+                               value="{{ i.name }}"
+                               disabled>
+                    </td>
+                    <td>
+                        <select class="form-control" disabled="disabled">
+                            <option value="" {% if i.component_id %}selected{% endif %}></option>
+                            {% for c in all_components %}
+                                <option value="{{ c.id }}"
+                                        {% if i.component_id == c.id %}selected{% endif %}>{{ c.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </td>
+                    <td>
+                        <input class="form-control"
+                               type="text"
+                               value="{{ i.description if i.description }}"
+                               disabled></td>
+                    <td>
+                        <button type="button" class="btn btn-warning"><i class="far fa-edit"></i></button>
+                        <button type="button"
+                                id="del-button-{{ i.id }}"
+                                data-value="{{ i.id }}"
+                                class="btn btn-danger del-button">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
 {% endblock %}
 
 {% block script %}
@@ -104,8 +109,7 @@
                 url: "/identifier",
                 data: {name: name, component_id: component_id, description: description}
             }).done(function (data) {
-                if(data.success === true){
-                    console.log(data);
+                if (data.success === true) {
                     newIdentNameTF.val("");
                     newIdentCompSelect.val("");
                     newIdentDesTF.val("");
@@ -115,11 +119,11 @@
                     let generatedCompName = data.newIdent.componentName === null ? '' : data.newIdent.componentName;
                     let generatedDec = data.newIdent.description === null ? '' : data.newIdent.description;
 
-                    let inputID = '<input class="form-control" type="text" value="'+ generatedName + '" disabled="disabled">';
+                    let inputID = '<input class="form-control" type="text" value="' + generatedName + '" disabled="disabled">';
                     let select = '<select class="form-control" disabled="disabled">\n' +
                         '           <option selected>' + generatedCompName + '</option>' +
                         '         </select>';
-                    let inputDesc = '<input class="form-control" type="text" value="'+ generatedDec + '" disabled="disabled">';
+                    let inputDesc = '<input class="form-control" type="text" value="' + generatedDec + '" disabled="disabled">';
 
                     $("#identifier-table-body tr:first").after('<tr>' +
                         '<td>' + generatedID + '</td>' +
@@ -136,7 +140,7 @@
         $(".del-button").click(function (e) {
             let id = $(this).data("value");
 
-            let check = confirm("Do you really want to delete the identifier with the ID: "+id);
+            let check = confirm("Do you really want to delete the identifier with the ID: " + id);
             if (check === true) {
                 $.ajax({
                     method: "DELETE",

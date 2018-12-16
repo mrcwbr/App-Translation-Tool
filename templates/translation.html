@@ -8,55 +8,211 @@
 {% endblock %}
 
 {% block content %}
-    <h5><img src="{{ language.flag_image_link }}" style="height: 16px" class="mr-2">{{ language.name }} Translations</h5>
-    <a href="#" class="card-link redTextColor" data-toggle="tooltip" data-placement="bottom"
-                           title="Translation isn't complete"><i class="fas fa-file-export mr-2"></i>Export</a>
-    <table class="table table-striped">
-        <thead>
-        <tr>
-            <th scope="col">Timestamp</th>
-            <th scope="col">Identifier</th>
-            <th scope="col">Component</th>
-            <th scope="col">{{ language.name }} Translation</th>
-            <th scope="col">Action</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr>
-            <td><i>autogen</i></td>
-            <td>
-                <select class="form-control">
-                    <option>LoginVC</option>
-                </select>
-            </td>
-            <td><i>autogen</i></td>
-            <td><input class="form-control" type="text" placeholder="Translation"></td>
-            <td>
-                <button type="button" class="btn btn-success"><i class="fas fa-plus-circle"></i></button>
-            </td>
-        </tr>
-
-        {% for i in identifiers %}
+    <div class="card">
+        <div class="card-header">
+            <div id="lang-code-helper" style="display:none">{{ language.code }}</div>
+            <div class="float-left">
+                <div class="dropdown">
+                    <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton"
+                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <img alt="{{ language.name }} Flag"
+                             src="{{ language.flag_image_link }}"
+                             style="height: 16px"
+                             class="mr-2">
+                        {{ language.name }}
+                    </button>
+                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                        {% for l in other_languages %}
+                            <a class="dropdown-item" href="/translation/{{ l.code }}">
+                                <img alt="{{ l.name }} Flag"
+                                     src="{{ l.flag_image_link }}"
+                                     style="height: 16px"
+                                     class="mr-2">
+                                {{ l.name }}
+                            </a>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+            <div class="float-right">
+                <div class="dropdown">
+                    <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton"
+                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <i class="fas fa-file-export mr-2"></i>Export
+                    </button>
+                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                        <a class="dropdown-item export-button" data-value="iOS" data-toggle="modal" data-target="#export-modal" style="cursor: pointer"><i class="fab fa-apple mr-2"></i>iOS</a>
+                        <a class="dropdown-item export-button" data-value="Android" data-toggle="modal" data-target="#export-modal" style="cursor: pointer"><i class="fab fa-android mr-2"></i>Android</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <table class="table table-striped">
+            <thead>
             <tr>
-            <td>
-                {{ i.timestamp }}
-            </td>
-            <td>
-                <select class="form-control">
-                    <option>LoginVC</option>
-                </select>
-            </td>
-            <td>
-                <b>Component</b><br/>
-                Description
-            </td>
-            <td><input class="form-control" type="text" placeholder="Translation"></td>
-            <td>
-                <button type="button" class="btn btn-success"><i class="fas fa-plus-circle"></i></button>
-            </td>
-        </tr>
-        {% endfor %}
-        </tbody>
-    </table>
+                <th scope="col">ID</th>
+                <th scope="col">Timestamp</th>
+                <th scope="col">Identifier</th>
+                <th scope="col">Component</th>
+                <th scope="col">{{ language.name }} Translation</th>
+                <th scope="col">Action</th>
+            </tr>
+            </thead>
+            <tbody id="translation-table-body">
+            <tr>
+                {% if unused_identifier|length == 0 %}
+                    <td colspan="7" class="greenTextColor text-center">
+                        Great - every identifier is translated!
+                    </td>
+                {% else %}
+                    <td><i>auto</i></td>
+                    <td><i>auto</i></td>
+                    <td>
+                        <select class="form-control" id="new-ident-id">
+                            {% for i in unused_identifier %}
+                                <option value="{{ i.id }}">{{ i.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </td>
+                    <td><i>auto</i></td>
+                    <td>
+                        <input class="form-control"
+                               id="new-translation-string"
+                               type="text"
+                               placeholder="Translation">
+                    </td>
+                    <td>
+                        <button type="button" class="btn btn-success" id="translation-add-button">
+                            <i class="fas fa-plus-circle"></i>
+                        </button>
+                    </td>
+                {% endif %}
+            </tr>
 
+            {% for t in translations %}
+                <tr id="translation-row-{{ t.id }}">
+                    <td>{{ t.id }}</td>
+                    <td>{{ t.timestamp.strftime('%Y-%m-%d %H:%M:%S') }}</td>
+                    <td>
+                        <span class="d-inline-block"
+                              tabindex="0"
+                              style="width:100%"
+                              data-toggle="tooltip"
+                              data-placement="top"
+                              title="{{ t.identifier.description if t.identifier.description }}">
+                            <select class="form-control" disabled="disabled" style="pointer-events: none;">
+                                <option>{{ t.identifier.name }}</option>
+                            </select>
+                        </span>
+                    </td>
+                    <td>
+                        {{ t.identifier.component.name }}
+                    </td>
+                    <td><input class="form-control" type="text" value="{{ t.text }}" disabled="disabled"></td>
+                    <td>
+                        <!--<button type="button"
+                                id="edit-button-{{ t.id }}"
+                                class="btn btn-warning edit-button"
+                                data-value="{{ t.id }}">
+                            <i class="far fa-edit"></i>
+                        </button>
+                        <button type="button"
+                                id="com-button-{{ t.id }}"
+                                class="btn btn-success com-button"
+                                data-value="{{ t.id }}"
+                                style="display: none">
+                            <i class="far fa-check-circle"></i>
+                        </button>-->
+                        <button type="button"
+                                id="del-button-{{ t.id }}"
+                                class="btn btn-danger del-button"
+                                data-value="{{ t.id }}">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% include 'modals/export-modal.html' %}
+{% endblock %}
+
+{% block script %}
+    <script type="text/javascript">
+        //ADD
+        $("#translation-add-button").click(function (e) {
+            let translationStringTF = $("#new-translation-string");
+            let identIDSelect = $("#new-ident-id");
+
+
+            let translationString = translationStringTF.val();
+            let identifierID = identIDSelect.val();
+            let langCode = $("#lang-code-helper").html();
+
+            $.ajax({
+                method: "POST",
+                url: "/translation",
+                data: {translationString: translationString, identifierID: identifierID, langCode: langCode}
+            }).done(function (data) {
+                if (data.success === true) {
+                    console.log(data);
+                    translationStringTF.val("");
+                    identIDSelect.val("");
+
+                    let generatedID = data.newTrans.id;
+                    let text = data.newTrans.text;
+                    let timestamp = data.newTrans.timestamp;
+                    let identifier = data.newTrans.identifier;
+
+                    let select = '<select class="form-control" disabled="disabled">\n' +
+                        '           <option selected>' + identifier + '</option>' +
+                        '         </select>';
+                    let textTF = '<input class="form-control" type="text" value="' + text + '" disabled="disabled">';
+
+                    $("#translation-table-body tr:first").after('<tr>' +
+                        '<td>' + generatedID + '</td>' +
+                        '<td>' + timestamp + '</td>' +
+                        '<td>' + select + '</td>' +
+                        '<td></td>' +
+                        '<td>' + textTF + '</td>' +
+                        '<td></td>' +
+                        '</tr>');
+                } else alert(data.msg);
+            });
+        });
+
+        //DELETE
+        $(".del-button").click(function (e) {
+            let id = $(this).data("value");
+
+            let check = confirm("Do you really want to delete the translation with the ID: " + id);
+            if (check === true) {
+                $.ajax({
+                    method: "DELETE",
+                    url: "/translation",
+                    data: {id: id}
+                }).done(function (msg) {
+                    $("#translation-row-" + id).remove();
+                });
+            }
+        });
+
+        //Export
+        $(".export-button").click(function (e) {
+            let platform = $(this).data("value");
+            let lang = $("#lang-code-helper").html();
+
+            $("#export-modal .modal-title").text(platform + " export");
+            $("#export-text-area").val("Loading ...");
+
+            let url = "/export?lang=" + lang + "&platform=" + platform;
+            $.ajax({
+                    method: "GET",
+                    url: url
+                }).done(function (msg) {
+                    $("#export-text-area").val(msg);
+                });
+        });
+    </script>
 {% endblock %}

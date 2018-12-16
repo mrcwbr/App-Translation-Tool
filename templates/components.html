@@ -8,60 +8,65 @@
 {% endblock %}
 
 {% block content %}
-    <h5>Components:</h5>
-    <table class="table table-striped">
-        <thead>
-        <tr>
-            <th scope="col">ID</th>
-            <th scope="col">Name</th>
-        </tr>
-        </thead>
-        <tbody id="component-table-body">
-        <tr>
-            <td></td>
-            <td><input class="form-control" id="new-component-name" type="text" placeholder="e. g. Profil Controller"></td>
-            <td>
-                <button type="button" class="btn btn-success" id="component-add-button"><i class="fas fa-plus-circle"></i></button>
-            </td>
-        </tr>
-
-        {% for c in components %}
-            <tr id="component-row-{{ c.id }}">
-                <td>{{ c.id }}</td>
+    <div class="card">
+        <div class="card-header">
+            <h5>Components</h5>
+        </div>
+        <table class="table table-striped">
+            <thead>
+            <tr>
+                <th scope="col">ID</th>
+                <th scope="col">Name</th>
+            </tr>
+            </thead>
+            <tbody id="component-table-body">
+            <tr>
+                <td><i>auto</i></td>
+                <td><input class="form-control" id="new-component-name" type="text"
+                           placeholder="e. g. Profil Controller"></td>
                 <td>
-                    <input class="form-control"
-                           id="component-input-name-{{ c.id }}"
-                           type="text"
-                           placeholder="Login Controller"
-                           value="{{ c.name }}"
-                           disabled="disabled">
-                </td>
-                <td>
-                    <button type="button"
-                            id="component-button-edit-{{ c.id }}"
-                            class="btn btn-warning edit-button"
-                            data-value="{{ c.id }}">
-                        <i class="far fa-edit"></i>
-                    </button>
-                    <button type="button"
-                            id="com-button-{{ c.id }}"
-                            class="btn btn-success com-button"
-                            data-value="{{ c.id }}"
-                            style="display: none">
-                        <i class="far fa-check-circle"></i>
-                    </button>
-                    <button type="button"
-                            id="del-button-{{ c.id }}"
-                            class="btn btn-danger del-button"
-                            data-value="{{ c.id }}">
-                        <i class="fas fa-trash"></i>
-                    </button>
+                    <button type="button" class="btn btn-success" id="component-add-button"><i
+                            class="fas fa-plus-circle"></i></button>
                 </td>
             </tr>
-        {% endfor %}
-        </tbody>
-    </table>
 
+            {% for c in components %}
+                <tr id="component-row-{{ c.id }}">
+                    <td>{{ c.id }}</td>
+                    <td>
+                        <input class="form-control"
+                               id="component-input-name-{{ c.id }}"
+                               type="text"
+                               placeholder="Login Controller"
+                               value="{{ c.name }}"
+                               disabled="disabled">
+                    </td>
+                    <td>
+                        <button type="button"
+                                id="component-button-edit-{{ c.id }}"
+                                class="btn btn-warning edit-button"
+                                data-value="{{ c.id }}">
+                            <i class="far fa-edit"></i>
+                        </button>
+                        <button type="button"
+                                id="com-button-{{ c.id }}"
+                                class="btn btn-success com-button"
+                                data-value="{{ c.id }}"
+                                style="display: none">
+                            <i class="far fa-check-circle"></i>
+                        </button>
+                        <button type="button"
+                                id="del-button-{{ c.id }}"
+                                class="btn btn-danger del-button"
+                                data-value="{{ c.id }}">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
 {% endblock %}
 
 {% block script %}
@@ -75,12 +80,12 @@
                 url: "/component",
                 data: {name: name}
             }).done(function (msg) {
-                if(msg.success === true){
+                if (msg.success === true) {
                     $("#new-component-name").val("");
                     let generated_id = msg.newComp.id;
                     let generated_name = msg.newComp.name;
 
-                    let input = '<input class="form-control" type="text" value="'+ generated_name + '" disabled="disabled">';
+                    let input = '<input class="form-control" type="text" value="' + generated_name + '" disabled="disabled">';
 
                     $("#component-table-body tr:first").after('<tr><td>' + generated_id + '</td><td>' + input + '</td><td></td></tr>');
 
@@ -92,7 +97,7 @@
         $(".del-button").click(function (e) {
             let id = $(this).data("value");
 
-            let check = confirm("Do you really want to delete the Component with the ID: "+id);
+            let check = confirm("Do you really want to delete the Component with the ID: " + id);
             if (check === true) {
                 $.ajax({
                     method: "DELETE",
@@ -108,18 +113,18 @@
         $(".edit-button").click(function (e) {
             let id = $(this).data("value");
 
-            $("#del-button-"+id).toggle();
-            $("#com-button-"+id).toggle();
+            $("#del-button-" + id).toggle();
+            $("#com-button-" + id).toggle();
 
-            let nameTF = $("#component-input-name-"+id);
-            if(nameTF.attr("disabled") === 'disabled') nameTF.prop("disabled", false);
+            let nameTF = $("#component-input-name-" + id);
+            if (nameTF.attr("disabled") === 'disabled') nameTF.prop("disabled", false);
             else nameTF.prop("disabled", 'disabled');
         });
 
         //Update
         $(".com-button").click(function (e) {
             let id = $(this).data("value");
-            let nameTextField = $("#component-input-name-"+id);
+            let nameTextField = $("#component-input-name-" + id);
             let name = nameTextField.val();
 
             $.ajax({
@@ -127,11 +132,11 @@
                 url: "/component",
                 data: {name: name, id: id}
             }).done(function (msg) {
-                if(msg.success === true){
+                if (msg.success === true) {
                     nameTextField.val(msg.updateComp.name);
                     nameTextField.prop("disabled", 'disabled');
-                    $("#del-button-"+id).toggle();
-                    $("#com-button-"+id).toggle();
+                    $("#del-button-" + id).toggle();
+                    $("#com-button-" + id).toggle();
 
                     //Show alert TODO: add in global js
                     $("#main-alert").addClass("alert-success");

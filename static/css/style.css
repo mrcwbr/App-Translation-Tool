@@ -60,7 +60,7 @@ a:hover,
 .btn-primary{
     transition: all .2s;
     background-color: #289BC8 !important;
-    border-color: #006d97; /*darkblue*/
+    border-color: #2881ae;
 }
 
 .btn-primary:hover{
@@ -73,7 +73,7 @@ a:hover,
 
 /*Content*/
 .container{
-    min-height: calc(100vh - 159px);
+    min-height: calc(100vh - 143px);
 }
 
 #main-alert.alert{

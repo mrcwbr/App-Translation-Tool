@@ -1,11 +1,12 @@
 from flask import Flask, render_template, request, jsonify
 from helpers import local_database_path
 from helpers.database import db
-from model.models import Project, Identifier, Component, LanguageProjectRelation, Language
+from model.models import Project, Identifier, Component, LanguageProjectRelation
 
 from route.component import comp  # Imported object import must be a other name than file
 from route.identifier import ident
 from route.translation import trans
+from route.export import exp
 
 app = Flask(__name__)
 
@@ -16,10 +17,10 @@ db.init_app(app)
 app.register_blueprint(comp)
 app.register_blueprint(ident)
 app.register_blueprint(trans)
+app.register_blueprint(exp)
 
-
-# TODO: Stand als datum in oberste zeile als kommentar exportieren
 # TODO: Default Language angeben -> if not translated completely no export or error message
+
 
 @app.route('/')
 def root():

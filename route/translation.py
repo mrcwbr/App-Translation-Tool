@@ -1,54 +1,56 @@
 from flask import Blueprint, render_template, request, jsonify
 from helpers.database import db
-from model.models import Project, Identifier, Language
+from model.models import Project, Identifier, Language, Translation
 
 trans = Blueprint('translation', __name__)
 
 
 @trans.route('/translation/<language_code>', methods=['GET'])
 def translation(language_code):
-    language = Language.query.filter_by(code=language_code).first()
-
     p = Project.query.first()
-    t = Identifier.query.filter_by(project_id=p.id).all()
+    language = Language.query.filter_by(code=language_code).first()
+    other_languages = Language.query.filter(Language.code != language_code).all()
+    unused_identifier = Identifier.query.filter(Identifier.project_id == p.id,
+                                                Identifier.id.notin_(db.session.query(Translation.identifier_id).filter_by(language_code=language_code))).all()
+    translations = Translation.query.filter(Translation.language_code == language.code,
+                                            Translation.identifier.has(project_id=p.id)).all()
 
-    return render_template('translation.html', project=p, translations=t, language=language)
+    return render_template('translation.html',
+                           project=p,
+                           translations=translations,
+                           unused_identifier=unused_identifier,
+                           language=language,
+                           other_languages=other_languages)
 
 
 @trans.route('/translation', methods=['POST'])
 def add_translation():
-    '''
     p = Project.query.first()
-    name = request.form.get('name')
-    component_id = request.form.get('component_id')
-    description = request.form.get('description')
+    translation_string = request.form.get('translationString')
+    identifier_id = request.form.get('identifierID')
+    language_code = request.form.get('langCode')
 
-    if not name:
-        return jsonify({'success': False, 'msg': 'No identifier-name presented.'})
+    if not translation_string or len(translation_string) < 2 or not identifier_id or not language_code:
+        return jsonify({'success': False, 'msg': 'Parameter is missing.'})
 
-    if len(Identifier.query.filter(Identifier.project_id == p.id, Identifier.name == name).all()) != 0 \
-            or len(name) < 3:
-        return jsonify({'success': False,
-                        'msg': "Identifiers's name is shorter than 3 characters or already in usage."})
+    lang = Language.query.filter_by(code=language_code).first()
+    if not lang:
+        return jsonify({'success': False, 'msg': 'Invalid language-code.'})
 
-    if component_id == "":
-        component_id = None
-    else:
-        # Check if Component exists
-        c = Component.query.filter_by(id=component_id).first()
-        if c is None:
-            return jsonify({'success': False, 'msg': 'Unknown component in project.'})
+    i = Identifier.query.filter(Identifier.project_id == p.id, Identifier.id == identifier_id).first()
+    if not i:
+        return jsonify({'success': False, 'msg': 'Invalid identifierID.'})
 
-    if description == "":
-        description = None
+    if len(Translation.query.filter(Translation.identifier_id == i.id,
+                                    Translation.language_code == lang.code).all()) != 0:
+        return jsonify({'success': False, 'msg': 'Identifier already in usage.'})
 
-    i = Identifier(name=name, description=description, component_id=component_id, project_id=p.id)
+    t = Translation(text=translation_string, identifier_id=i.id, language_code=lang.code)
 
-    db.session.add(i)
+    db.session.add(t)
     db.session.commit()
 
-    return jsonify({'success': True, 'newIdent': i.to_json_dict()})'''
-    return ''
+    return jsonify({'success': True, 'newTrans': t.to_json_dict()})
 
 # TODO: Update
 
@@ -72,18 +74,18 @@ def update_component():
 
     return jsonify({'success': True, 'updateComp': c.to_json_dict()})
 
-
+'''
 
 
 @trans.route('/translation', methods=['DELETE'])
 def delete_component():
-    ident_id = request.form.get('id')
+    translation_id = request.form.get('id')
 
-    if not ident_id:
-        return jsonify({'success': False})
+    if not translation_id:
+        return jsonify({'success': False, 'msg': 'Parameter is missing.'})
 
-    i = Identifier.query.filter_by(id=ident_id).first()
-    db.session.delete(i)
+    t = Translation.query.filter_by(id=translation_id).first()
+    db.session.delete(t)
     db.session.commit()
     return jsonify({'success': True})
-'''
+

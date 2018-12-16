@@ -69,7 +69,6 @@ class Identifier(db.Model):
         return '<Identifier %s>' % self.id
 
     def to_json_dict(self):
-        print(self.component)
         return {
             'id': self.id,
             'name': self.name,
@@ -85,10 +84,18 @@ class Translation(db.Model):
     timestamp = db.Column(db.DATETIME, default=datetime.datetime.utcnow())
 
     identifier_id = db.Column(db.Integer, db.ForeignKey('identifier.id'), nullable=False)
-    identifier = db.relationship('Identifier', backref=db.backref('translations', lazy=True))
+    identifier = db.relationship('Identifier', backref=db.backref('translations'))
 
     language_code = db.Column(db.String(5), db.ForeignKey('language.code'), nullable=False)
     language = db.relationship('Language', backref=db.backref('translations', lazy=True))
 
     def __repr__(self):
         return '<Translation id=%s lang=%s>' % (self.id, self.language_code)
+
+    def to_json_dict(self):
+        return {
+            'id': self.id,
+            'text': self.text,
+            'timestamp': self.timestamp.strftime('%Y-%m-%d %H:%M:%S'),
+            'identifier': self.identifier.name
+        }
