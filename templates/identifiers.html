@@ -17,8 +17,8 @@
             <tr>
                 <th scope="col">ID</th>
                 <th scope="col">Name</th>
-                <th scope="col">Component</th>
-                <th scope="col">Description</th>
+                <th scope="col">Component <i>(opt.)</i></th>
+                <th scope="col">Description <i>(opt.)</i></th>
                 <th scope="col">Action</th>
             </tr>
             </thead>
@@ -58,12 +58,13 @@
                     <td>{{ i.id }}</td>
                     <td scope="row">
                         <input class="form-control"
+                               id="name-input-{{ i.id }}"
                                type="text"
                                value="{{ i.name }}"
                                disabled>
                     </td>
                     <td>
-                        <select class="form-control" disabled="disabled">
+                        <select class="form-control" id="component-select-{{ i.id }}" disabled="disabled">
                             <option value="" {% if i.component_id %}selected{% endif %}></option>
                             {% for c in all_components %}
                                 <option value="{{ c.id }}"
@@ -73,14 +74,28 @@
                     </td>
                     <td>
                         <input class="form-control"
+                               id="description-input-{{ i.id }}"
                                type="text"
                                value="{{ i.description if i.description }}"
-                               disabled></td>
+                               disabled>
+                    </td>
                     <td>
-                        <button type="button" class="btn btn-warning"><i class="far fa-edit"></i></button>
+                        <button type="button"
+                                id="edit-button-{{ i.id }}"
+                                data-id="{{ i.id }}"
+                                class="btn btn-warning edit-button">
+                            <i class="far fa-edit"></i>
+                        </button>
+                        <button type="button"
+                                id="com-button-{{ i.id }}"
+                                class="btn btn-success com-button"
+                                data-id="{{ i.id }}"
+                                style="display: none">
+                            <i class="far fa-check-circle"></i>
+                        </button>
                         <button type="button"
                                 id="del-button-{{ i.id }}"
-                                data-value="{{ i.id }}"
+                                data-id="{{ i.id }}"
                                 class="btn btn-danger del-button">
                             <i class="fas fa-trash"></i>
                         </button>
@@ -93,63 +108,5 @@
 {% endblock %}
 
 {% block script %}
-    <script type="text/javascript">
-        //ADD
-        $("#identifier-add-button").click(function (e) {
-            let newIdentNameTF = $("#new-identifier-name");
-            let newIdentCompSelect = $("#new-identifier-component");
-            let newIdentDesTF = $("#new-identifier-description");
-
-            let name = newIdentNameTF.val();
-            let component_id = newIdentCompSelect.val();
-            let description = newIdentDesTF.val();
-
-            $.ajax({
-                method: "POST",
-                url: "/identifier",
-                data: {name: name, component_id: component_id, description: description}
-            }).done(function (data) {
-                if (data.success === true) {
-                    newIdentNameTF.val("");
-                    newIdentCompSelect.val("");
-                    newIdentDesTF.val("");
-
-                    let generatedID = data.newIdent.id;
-                    let generatedName = data.newIdent.name;
-                    let generatedCompName = data.newIdent.componentName === null ? '' : data.newIdent.componentName;
-                    let generatedDec = data.newIdent.description === null ? '' : data.newIdent.description;
-
-                    let inputID = '<input class="form-control" type="text" value="' + generatedName + '" disabled="disabled">';
-                    let select = '<select class="form-control" disabled="disabled">\n' +
-                        '           <option selected>' + generatedCompName + '</option>' +
-                        '         </select>';
-                    let inputDesc = '<input class="form-control" type="text" value="' + generatedDec + '" disabled="disabled">';
-
-                    $("#identifier-table-body tr:first").after('<tr>' +
-                        '<td>' + generatedID + '</td>' +
-                        '<td>' + inputID + '</td>' +
-                        '<td>' + select + '</td>' +
-                        '<td>' + inputDesc + '</td>' +
-                        '<td></td>' +
-                        '</tr>');
-                } else alert(data.msg);
-            });
-        });
-
-        //DELETE
-        $(".del-button").click(function (e) {
-            let id = $(this).data("value");
-
-            let check = confirm("Do you really want to delete the identifier with the ID: " + id);
-            if (check === true) {
-                $.ajax({
-                    method: "DELETE",
-                    url: "/identifier",
-                    data: {id: id}
-                }).done(function (msg) {
-                    $("#identifier-row-" + id).remove();
-                });
-            }
-        });
-    </script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/identifiers.js') }}"></script>
 {% endblock %}

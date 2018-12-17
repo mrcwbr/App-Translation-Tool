@@ -18,7 +18,7 @@ def identifier():
 def add_identifier():
     p = Project.query.first()
     name = request.form.get('name')
-    component_id = request.form.get('component_id')
+    component_id = request.form.get('componentID')
     description = request.form.get('description')
 
     if not name:
@@ -47,29 +47,37 @@ def add_identifier():
 
     return jsonify({'success': True, 'newIdent': i.to_json_dict()})
 
-# TODO: Update
 
-
-''' 
 @ident.route('/identifier', methods=['PUT'])
 def update_component():
+    p = Project.query.first()
+    identifier_id = request.form.get('id')
     name = request.form.get('name')
-    comp_id = request.form.get('id')
+    component_id = request.form.get('componentID')
+    description = request.form.get('description')
 
-    if not name or len(name) < 3 or not comp_id:
-        return jsonify({'success': False})
+    if not name or len(name) < 3:
+        return jsonify({'success': False, 'msg': "Identifiers's name is shorter than 3 characters"})
 
-    c = Component.query.filter(Component.id == comp_id).first()
-    check_already_used = Component.query.filter(Component.name == name).all()
-    if not c or check_already_used:
-        return jsonify({'success': False})
+    if component_id == "":
+        component_id = None
+    else:
+        # Check if Component exists
+        c = Component.query.filter_by(id=component_id).first()
+        if c is None:
+            return jsonify({'success': False, 'msg': 'Unknown component in project.'})
 
-    c.name = name
+    if description == "":
+        description = None
+
+    i = Identifier.query.filter(Identifier.id == identifier_id).first()
+    i.name = name
+    i.component_id = component_id
+    i.description = description
+
     db.session.commit()
 
-    return jsonify({'success': True, 'updateComp': c.to_json_dict()})
-
-'''
+    return jsonify({'success': True, 'updatedIdentifier': i.to_json_dict()})
 
 
 @ident.route('/identifier', methods=['DELETE'])

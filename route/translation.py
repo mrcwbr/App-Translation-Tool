@@ -11,9 +11,11 @@ def translation(language_code):
     language = Language.query.filter_by(code=language_code).first()
     other_languages = Language.query.filter(Language.code != language_code).all()
     unused_identifier = Identifier.query.filter(Identifier.project_id == p.id,
-                                                Identifier.id.notin_(db.session.query(Translation.identifier_id).filter_by(language_code=language_code))).all()
+                                                Identifier.id.notin_(db.session.query(Translation.identifier_id)
+                                                                     .filter_by(language_code=language_code))).all()
     translations = Translation.query.filter(Translation.language_code == language.code,
-                                            Translation.identifier.has(project_id=p.id)).all()
+                                            Translation.identifier.has(project_id=p.id)).order_by(
+        Translation.id.desc()).all()
 
     return render_template('translation.html',
                            project=p,

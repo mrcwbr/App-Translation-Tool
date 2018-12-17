@@ -12,7 +12,7 @@
         <div class="col-4">
             <div class="card">
                 <div class="card-header">
-                    Identifiers
+                    <i class="fas fa-passport mr-2"></i>Identifiers
                 </div>
                 <div class="card-body">
                     <h1 class="text-center" style="font-size: 6.5rem; font-weight: 300">{{ number_of_identifiers }}</h1>
@@ -25,7 +25,7 @@
         <div class="col-4">
             <div class="card">
                 <div class="card-header">
-                    Components
+                    <i class="fas fa-toolbox mr-2"></i>Components
                 </div>
                 <div class="card-body">
                    <h1 class="text-center" style="font-size: 6.5rem; font-weight: 300">{{ number_of_components }}</h1>
@@ -38,7 +38,7 @@
         <div class="col-4">
             <div class="card">
                 <div class="card-header">
-                    Number of languages
+                    <i class="fas fa-language mr-2"></i>Number of languages
                 </div>
                 <div class="card-body">
                    <h1 class="text-center" style="font-size: 6.5rem; font-weight: 300">{{ number_of_languages }}</h1>
@@ -77,67 +77,29 @@
                             </div>
                         </div>
                         <a href="/translation/{{ l.language.code }}" class="card-link"><i class="fas fa-language mr-2"></i>Translate</a>
-                        <a href="#" class="card-link redTextColor" data-toggle="tooltip" data-placement="bottom"
-                           title="Translation isn't complete"><i class="fas fa-file-export mr-2"></i>Export</a>
+
+                        <div class="dropdown float-right">
+                            <a href="#" class="card-link dropdown-toggle" data-toggle="dropdown">
+                                <i class="fas fa-file-export mr-2"></i>Export
+                            </a>
+                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                <a class="dropdown-item export-button" data-lang="{{ l.language.code }}"
+                                   data-platform="iOS" data-toggle="modal" data-target="#export-modal"
+                                   style="cursor: pointer"><i class="fab fa-apple mr-2"></i>iOS</a>
+                                <a class="dropdown-item export-button" data-lang="{{ l.language.code }}"
+                                   data-platform="Android" data-toggle="modal" data-target="#export-modal"
+                                   style="cursor: pointer"><i class="fab fa-android mr-2"></i>Android</a>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
         {% endfor %}
-
     </div>
+    {% include 'modals/export-modal.html' %}
+    {% include 'modals/add-language-modal.html' %}
+{% endblock %}
 
-    <!-- Modal -->
-    <div class="modal fade" id="add-lang-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
-         aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalCenterTitle">Add new Language</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    Coming soon...
-                    <!--<form>
-                        <h5>Map existing language to project</h5>
-                        <div class="form-group">
-                            <label for="exampleFormControlSelect1">Language:</label>
-                            <select class="form-control" id="exampleFormControlSelect1">
-                                <option>German</option>
-                                <option>Englisch</option>
-                                <option>3</option>
-                                <option>4</option>
-                                <option>5</option>
-                            </select>
-                        </div>
-
-                        <hr>
-
-                        <h5>Add new language to project</h5>
-                        <div class="form-group">
-                            <label for="inputAddress">Code</label>
-                            <input type="text" class="form-control" id="input-new-lang-code" placeholder="en_EN">
-                        </div>
-                        <div class="form-group">
-                            <label for="inputAddress">Name</label>
-                            <input type="text" class="form-control" id="input-new-lang-name" placeholder="English">
-                        </div>
-                        <div class="form-group">
-                            <label for="inputAddress">Flaglink</label>
-                            <input type="text" class="form-control" id="input-new-lang-flaglink"
-                                   placeholder="https://www.free-country-flags.com/countries/United_Kingdom/1/medium/United_Kingdom.png">
-                            <a href="https://www.free-country-flags.com" target="_blank" class="mt-2"><i
-                                    class="fas fa-external-link-alt mr-2"></i>https://www.free-country-flags.com</a>
-                        </div>
-
-                    </form>-->
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                    <button type="button" class="btn btn-primary" disabled>Save</button>
-                </div>
-            </div>
-        </div>
-    </div>
+{% block script %}
+    <script type="text/javascript" src="{{ url_for('static', filename='js/export.js') }}"></script>
 {% endblock %}

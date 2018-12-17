@@ -57,7 +57,7 @@ class Component(db.Model):
 class Identifier(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(255), nullable=False)
-    description = db.Column(db.String(100), nullable=True)
+    description = db.Column(db.String(255), nullable=True)
 
     project_id = db.Column(db.Integer, db.ForeignKey('project.id'), nullable=False)
     project = db.relationship('Project', backref=db.backref('identifiers', lazy=True))

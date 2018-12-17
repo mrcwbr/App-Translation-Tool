@@ -28,9 +28,9 @@
 </nav>
 
 <div class="container">
-    <div id="main-alert" class="alert" role="alert">
+    <div id="main-alert" class="alert alert-success" role="alert">
         <span id="main-alert-text">A simple primary alert—check it out!</span>
-        <div id="close-main-alert">&times;</div>
+        <div id="close-main-alert"><i class="far fa-times-circle"></i></div>
     </div>
     {% block content %}{% endblock %}
 </div>
@@ -40,9 +40,11 @@
     Munich
 </footer>
 
-<script src="{{ url_for('static', filename='js/popper.min.js') }}"></script>
-<script src="{{ url_for('static', filename='js/jquery-3.3.1.min.js') }}"></script>
-<script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
+<script src="{{ url_for('static', filename='js/dependencies/popper.min.js') }}"></script>
+<script src="{{ url_for('static', filename='js/dependencies/jquery-3.3.1.min.js') }}"></script>
+<script src="{{ url_for('static', filename='js/dependencies/bootstrap.min.js') }}"></script>
+
+<script type="text/javascript" src="{{ url_for('static', filename='js/default-alert.js') }}"></script>
 
 <script type="text/javascript">
     $("#close-main-alert").click(function () {

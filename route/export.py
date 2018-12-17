@@ -1,6 +1,5 @@
 from flask import Blueprint, render_template, request, jsonify
-from helpers.database import db
-from model.models import Project, Identifier, Language, Translation
+from model.models import Project, Language, Translation
 
 exp = Blueprint('export', __name__)
 
@@ -31,7 +30,7 @@ def translation():
         result += '<resources>\n'
 
     for t in translations:
-        # TODO: Add comment for new component --> order by component and identfier
+        # TODO: Add comment for new component --> order by component and identifier
         result += build_translation_row(platform, t.identifier.name, t.text)
 
     if platform == 'Android':
@@ -40,14 +39,15 @@ def translation():
     return result
 
 
-def build_translation_row(platform, identifier, translation):
+def build_translation_row(platform, identifier, translation_text):
+    # TODO: replace formatted string
     if platform == 'iOS':
         # "Speed" = "Geschwindigkeit";
-        return '"%s" = "%s";\n' % (identifier, translation)
+        return '"%s" = "%s";\n' % (identifier, translation_text)
 
     elif platform == 'Android':
         #
-        return '<string name="%s">%s</string>\n' % (identifier, translation)
+        return '<string name="%s">%s</string>\n' % (identifier, translation_text)
 
 
 def add_comment(platform, text):

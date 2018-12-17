@@ -1,9 +1,10 @@
 function showDefaultAlert(className, msg) {
-    $("#main-alert").addClass(className);
+    $("#main-alert").removeClass();
+    $("#main-alert").addClass('alert ' + className);
     $("#main-alert-text").text(msg);
 
-    //TODO: wird nicht automatsich ausgeblendet
-    $("#main-alert").fadeTo(2000, 500).slideUp(500, function () {
-        $("#main-alert").slideUp(500);
+    //Hide Alert after 3 sec
+    $("#main-alert").fadeIn("fast", function(){
+        setTimeout(function(){ $("#main-alert").fadeOut(); }, 3000);
     });
 }

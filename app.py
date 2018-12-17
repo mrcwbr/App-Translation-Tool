@@ -35,7 +35,7 @@ def root():
                                                 Translation.identifier.has(project_id=p.id)).all()
 
         l.last_update = None if len(translations) == 0 else max(t.timestamp for t in translations)
-        l.translated_percentage = len(translations) * 100 / number_of_identifiers
+        l.translated_percentage = round(len(translations) * 100 / number_of_identifiers)
 
     return render_template('root.html',
                            project=p,
