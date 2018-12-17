@@ -54,7 +54,7 @@
     <hr class="mb-4"/>
 
     <div class="row mb-4">
-        {% for l in project.languages %}
+        {% for l in languages %}
             <div class="col-4">
                 <div class="card">
                     <img class="card-img-top"
@@ -67,12 +67,13 @@
                             {% endif %}
                         </h5>
                         <p class="card-text">
-                            Stand: 10.10.2010
+                            Last update: <b>{{ l.last_update.strftime('%Y-%m-%d %H:%M:%S') if l.last_update else 'no data found' }}</b>
                         </p>
                         <div class="progress mb-3">
-                            <div class="progress-bar progress-bar-striped redBgColor" role="progressbar"
-                                 style="width: 60%"
-                                 aria-valuenow="10" aria-valuemin="0" aria-valuemax="100">60%
+                            <div class="progress-bar progress-bar-striped {{ 'greenBgColor' if l.translated_percentage == 100 else 'redBgColor' }}"
+                                 role="progressbar"
+                                 style="width: {{ l.translated_percentage }}%"
+                                 aria-valuenow="10" aria-valuemin="0" aria-valuemax="100">{{ l.translated_percentage }}%
                             </div>
                         </div>
                         <a href="/translation/{{ l.language.code }}" class="card-link"><i class="fas fa-language mr-2"></i>Translate</a>

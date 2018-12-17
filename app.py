@@ -1,7 +1,7 @@
 from flask import Flask, render_template, request, jsonify
 from helpers import local_database_path
 from helpers.database import db
-from model.models import Project, Identifier, Component, LanguageProjectRelation
+from model.models import Project, Identifier, Component, LanguageProjectRelation, Translation
 
 from route.component import comp  # Imported object import must be a other name than file
 from route.identifier import ident
@@ -28,9 +28,18 @@ def root():
     number_of_identifiers = len(Identifier.query.filter_by(project_id=p.id).all())
     number_of_components = len(Component.query.filter_by(project_id=p.id).all())
     number_of_languages = len(LanguageProjectRelation.query.filter(LanguageProjectRelation.project_id == p.id).all())
+    languages = p.languages
+
+    for l in languages:
+        translations = Translation.query.filter(Translation.language_code == l.lang_code,
+                                                Translation.identifier.has(project_id=p.id)).all()
+
+        l.last_update = None if len(translations) == 0 else max(t.timestamp for t in translations)
+        l.translated_percentage = len(translations) * 100 / number_of_identifiers
 
     return render_template('root.html',
                            project=p,
+                           languages=languages,
                            number_of_identifiers=number_of_identifiers,
                            number_of_components=number_of_components,
                            number_of_languages=number_of_languages)

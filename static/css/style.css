@@ -83,6 +83,7 @@ a:hover,
     width: 1110px;
     padding: 0.5rem 1.25rem;
     display:none;
+    z-index: 1;
 }
 
 #main-alert #close-main-alert{

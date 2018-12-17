@@ -27,9 +27,15 @@ def translation():
 
     result = add_comment(platform, "Updated: " + last_update.strftime('%Y-%m-%d %H:%M:%S'))
 
+    if platform == 'Android':
+        result += '<resources>\n'
+
     for t in translations:
         # TODO: Add comment for new component --> order by component and identfier
         result += build_translation_row(platform, t.identifier.name, t.text)
+
+    if platform == 'Android':
+        result += '</resources>\n'
 
     return result
 
