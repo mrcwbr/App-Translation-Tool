@@ -40,7 +40,7 @@ def add_identifier():
     if description == "":
         description = None
 
-    i = Identifier(name=name, description=description, component_id=component_id, project_id=p.id)
+    i = Identifier(name=name.upper(), description=description, component_id=component_id, project_id=p.id)
 
     db.session.add(i)
     db.session.commit()

@@ -1,5 +1,5 @@
 from flask import Blueprint, render_template, request, jsonify
-from model.models import Project, Language, Translation
+from model.models import Project, Language, Translation, Identifier, Component
 
 exp = Blueprint('export', __name__)
 
@@ -19,8 +19,12 @@ def translation():
     if not platform or (platform != 'iOS' and platform != 'Android'):
         return "Unknown platform!"
 
-    translations = Translation.query.filter(Translation.language_code == language.code,
-                                            Translation.identifier.has(project_id=p.id)).all()
+    translations = Translation.query\
+        .filter(Translation.language_code == language.code, Translation.identifier.has(project_id=p.id))\
+        .join(Identifier)\
+        .join(Component)\
+        .order_by(Component.name, Identifier.name)\
+        .all()
 
     last_update = max(t.timestamp for t in translations)
 
@@ -29,8 +33,13 @@ def translation():
     if platform == 'Android':
         result += '<resources>\n'
 
+    last_component_name = ''
     for t in translations:
-        # TODO: Add comment for new component --> order by component and identifier
+        # Create block for every component
+        if t.identifier.component.name != last_component_name:
+            result += '\n' + add_comment(platform, 'Component: ' + t.identifier.component.name)
+            last_component_name = t.identifier.component.name
+
         result += build_translation_row(platform, t.identifier.name, t.text)
 
     if platform == 'Android':
