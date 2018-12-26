@@ -19,8 +19,6 @@ app.register_blueprint(ident)
 app.register_blueprint(trans)
 app.register_blueprint(exp)
 
-# TODO: Default Language angeben -> if not translated completely no export or error message
-
 
 @app.route('/')
 def root():

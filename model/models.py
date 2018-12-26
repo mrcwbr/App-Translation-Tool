@@ -51,7 +51,10 @@ class Component(db.Model):
         return '<Component %s id=%s>' % (self.name, self.id)
 
     def to_json_dict(self):
-        return {'id': self.id, 'name': self.name}
+        return {
+            'id': self.id,
+            'name': self.name
+        }
 
 
 class Identifier(db.Model):

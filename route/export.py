@@ -51,11 +51,14 @@ def translation():
 def build_translation_row(platform, identifier, translation_text):
     # TODO: replace formatted string
     if platform == 'iOS':
-        # "Speed" = "Geschwindigkeit";
+        # format string works with %@ at iOS
+        translation_text = translation_text.replace("%s", "%@")
+
+        # Format: "Speed" = "Geschwindigkeit";
         return '"%s" = "%s";\n' % (identifier, translation_text)
 
     elif platform == 'Android':
-        #
+        # Format:
         return '<string name="%s">%s</string>\n' % (identifier, translation_text)
 
 
