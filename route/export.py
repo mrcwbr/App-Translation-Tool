@@ -40,7 +40,7 @@ def translation():
             result += '\n' + add_comment(platform, 'Component: ' + t.identifier.component.name)
             last_component_name = t.identifier.component.name
 
-        result += build_translation_row(platform, t.identifier.name, t.text)
+        result += build_translation_row(platform, t.identifier.name, t.text, t.identifier.description)
 
     if platform == 'Android':
         result += '</resources>\n'
@@ -48,18 +48,33 @@ def translation():
     return result
 
 
-def build_translation_row(platform, identifier, translation_text):
-    # TODO: replace formatted string
+def build_translation_row(platform, identifier, translation_text, description):
     if platform == 'iOS':
-        # format string works with %@ at iOS
-        translation_text = translation_text.replace("%s", "%@")
-
-        # Format: "Speed" = "Geschwindigkeit";
-        return '"%s" = "%s";\n' % (identifier, translation_text)
+        # Format: "NEGATIVE_ALERT" = "Achtung"; // Comment
+        result = '"%s" = "%s";' % (identifier, escape_ios(translation_text))
+        return result + '\n' if description is None else result + ' // ' + description + '\n'
 
     elif platform == 'Android':
-        # Format:
-        return '<string name="%s">%s</string>\n' % (identifier, translation_text)
+        # Format: <string name="NEGATIVE_ALERT">Achtung</string> <!-- Comment -->
+        result = '<string name="%s">%s</string>' % (identifier, escape_android(translation_text))
+        return result + '\n' if description is None else result + ' <!-- ' + description + '-->\n'
+
+
+def escape_ios(text):
+    text = text.replace("%s", "%@")  # type: str
+    text = text.replace('"', '\\"')
+    return text
+
+
+def escape_android(text):
+    # https://developer.android.com/guide/topics/resources/string-resource#FormattingAndStyling
+    text = text.replace('@', '\\@')
+    text = text.replace('?', '\\?')
+    text = text.replace('<', '&lt;')
+    text = text.replace('&', '&amp;')
+    text = text.replace("'", "\\'")  # Single quote
+    text = text.replace('"', '\\"')  # Double quote
+    return text
 
 
 def add_comment(platform, text):
