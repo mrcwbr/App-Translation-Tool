@@ -41,8 +41,12 @@
                         <i class="fas fa-file-export mr-2"></i>Export
                     </button>
                     <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                        <a class="dropdown-item export-button" data-lang="{{ language.code }}" data-platform="iOS" data-toggle="modal" data-target="#export-modal" style="cursor: pointer"><i class="fab fa-apple mr-2"></i>iOS</a>
-                        <a class="dropdown-item export-button" data-lang="{{ language.code }}" data-platform="Android" data-toggle="modal" data-target="#export-modal" style="cursor: pointer"><i class="fab fa-android mr-2"></i>Android</a>
+                        <a class="dropdown-item export-button" data-lang="{{ language.code }}" data-platform="iOS"
+                           data-toggle="modal" data-target="#export-modal" style="cursor: pointer"><i
+                                class="fab fa-apple mr-2"></i>iOS</a>
+                        <a class="dropdown-item export-button" data-lang="{{ language.code }}" data-platform="Android"
+                           data-toggle="modal" data-target="#export-modal" style="cursor: pointer"><i
+                                class="fab fa-android mr-2"></i>Android</a>
                     </div>
                 </div>
             </div>
@@ -74,7 +78,8 @@
                         </select>
                     </td>
                     <td>
-                        <textarea class="form-control" id="new-translation-string" rows="2" placeholder="Translation"></textarea>
+                        <textarea class="form-control" id="new-translation-string" rows="2"
+                                  placeholder="Translation"></textarea>
                     </td>
                     <td>
                         <button type="button" class="btn btn-success" id="translation-add-button">
@@ -94,11 +99,12 @@
                               style="width:100%"
                               data-toggle="tooltip"
                               data-placement="top"
-                              title="{{ t.identifier.component.name + ": " if t.identifier.component.name}} {{ t.identifier.description if t.identifier.description }}">
+                              title="{{ t.identifier.component.name + ": " if t.identifier.component.name }} {{ t.identifier.description if t.identifier.description }}">
                             <select class="form-control" disabled="disabled" style="pointer-events: none;">
                                 <option>{{ t.identifier.name }}</option>
                             </select>
                         </span>
+                        <a class="copy-to-clipboard" data-value="{{ t.identifier.name }}" style="color: #289BC8; cursor:pointer"><i class="far fa-copy"></i> Copy to clipboard</a>
                     </td>
                     <td>
                         <textarea class="form-control" rows="2" disabled="disabled">{{ t.text }}</textarea>

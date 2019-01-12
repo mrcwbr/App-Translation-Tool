@@ -54,3 +54,24 @@ $(".del-button").click(function (e) {
         });
     }
 });
+
+$(".copy-to-clipboard").click(function (e) {
+    let text = $(this).data("value");
+
+    let tempInput = document.createElement("input");
+    tempInput.style = "position: absolute; left: -1000px; top: -1000px";
+    tempInput.value = text;
+    document.body.appendChild(tempInput);
+    tempInput.select();
+    document.execCommand("copy");
+    document.body.removeChild(tempInput);
+
+    /*let tf = $("#hidden-identifier-"+id);
+
+    tf.select();
+
+    document.execCommand("copy");*/
+
+    /* Alert the copied text */
+    showDefaultAlert("alert-success", "Identifier copied.");
+});

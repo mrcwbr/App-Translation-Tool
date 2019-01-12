@@ -22,7 +22,7 @@ def translation():
     translations = Translation.query\
         .filter(Translation.language_code == language.code, Translation.identifier.has(project_id=p.id))\
         .join(Identifier)\
-        .join(Component)\
+        .outerjoin(Component)\
         .order_by(Component.name, Identifier.name)\
         .all()
 
@@ -33,10 +33,13 @@ def translation():
     if platform == 'Android':
         result += '<resources>\n'
 
-    last_component_name = ''
+    last_component_name = None
     for t in translations:
         # Create block for every component
-        if t.identifier.component.name != last_component_name:
+        if t.identifier.component is None:
+            result += '\n' + add_comment(platform, 'Identifiers without component')
+            last_component_name = None
+        elif t.identifier.component.name != last_component_name:
             result += '\n' + add_comment(platform, 'Component: ' + t.identifier.component.name)
             last_component_name = t.identifier.component.name
 
