@@ -74,6 +74,7 @@ a:hover,
 /*Content*/
 .container{
     min-height: calc(100vh - 143px);
+    padding-top:20px;
 }
 
 #main-alert.alert{

@@ -15,7 +15,7 @@ $("#identifier-add-button").click(function (e) {
     }).done(function (data) {
         if (data.success === true) {
             newIdentNameTF.val("");
-            newIdentCompSelect.val("");
+            //newIdentCompSelect.val("");
             newIdentDesTF.val("");
 
             let generatedID = data.newIdent.id;

@@ -16,7 +16,14 @@ $("#translation-add-button").click(function (e) {
         if (data.success === true) {
             console.log(data);
             translationStringTF.val("");
-            identIDSelect.val("");
+            //identIDSelect.val("");
+
+            //Remove inserted ID from Select options
+            $("#new-ident-id option[value='" + identifierID + "']").remove();
+            //for (let i = 0; i < identIDSelect.length; i++) {
+            //    if (identIDSelect.options[i].value === identifierID)
+            //        identIDSelect.remove(i);
+            //}
 
             let generatedID = data.newTrans.id;
             let text = data.newTrans.text;
