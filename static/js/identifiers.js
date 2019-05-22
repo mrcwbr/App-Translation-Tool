@@ -37,7 +37,6 @@ $("#identifier-add-button").click(function (e) {
                 '<td></td>' +
                 '</tr>');
 
-            //TODO: Remove identifier from add-new-identifier-select
         } else alert(data.msg);
     });
 });

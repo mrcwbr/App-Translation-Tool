@@ -1,6 +1,7 @@
 from flask import Blueprint, render_template, request, jsonify
 from helpers.database import db
 from model.models import Project, Identifier, Component
+from sqlalchemy import and_
 
 ident = Blueprint('identifier', __name__)
 
@@ -9,7 +10,7 @@ ident = Blueprint('identifier', __name__)
 def identifier():
     p = Project.query.first()
     i = Identifier.query.filter_by(project_id=p.id).order_by(Identifier.id.desc()).all()
-    all_components = Component.query.filter_by(project_id=p.id).all()
+    all_components = Component.query.filter_by(project_id=p.id).order_by(Component.name.asc()).all()
 
     return render_template('identifiers.html', project=p, identifiers=i, all_components=all_components)
 
@@ -24,10 +25,16 @@ def add_identifier():
     if not name:
         return jsonify({'success': False, 'msg': 'No identifier-name presented.'})
 
-    if len(Identifier.query.filter(Identifier.project_id == p.id, Identifier.name == name).all()) != 0 \
-            or len(name) < 3:
+    if len(name) < 3:
         return jsonify({'success': False,
-                        'msg': "Identifiers's name is shorter than 3 characters or already in usage."})
+                        'msg': "Identifiers's name is shorter than 3 characters"})
+
+    # Format name
+    name = __format_name(name)
+
+    if __check_identifier_already_in_usage(name, p.id):
+        return jsonify({'success': False,
+                        'msg': "Identifier already in usage."})
 
     if component_id == "":
         component_id = None
@@ -39,10 +46,6 @@ def add_identifier():
 
     if description == "":
         description = None
-
-    # Format name
-    name = name.upper()
-    name = name.replace(' ', '_')
 
     i = Identifier(name=name, description=description, component_id=component_id, project_id=p.id)
 
@@ -62,6 +65,12 @@ def update_component():
 
     if not name or len(name) < 3:
         return jsonify({'success': False, 'msg': "Identifiers's name is shorter than 3 characters"})
+
+    # Format name
+    name = __format_name(name)
+    if __check_identifier_already_in_usage(name, p.id):
+        return jsonify({'success': False,
+                        'msg': "Identifier already in usage."})
 
     if component_id == "":
         component_id = None
@@ -95,3 +104,12 @@ def delete_component():
     db.session.delete(i)
     db.session.commit()
     return jsonify({'success': True})
+
+
+def __format_name(old_name):
+    old_name = old_name.upper()
+    return old_name.replace(' ', '_')
+
+
+def __check_identifier_already_in_usage(name, project_id):
+    return Identifier.query.filter(and_(Identifier.project_id == project_id, Identifier.name == str(name))).first() is not None

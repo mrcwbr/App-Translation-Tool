@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet"
+          href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css"
+          integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS"
+          crossorigin="anonymous">
+    <link rel="stylesheet"
+          href="https://use.fontawesome.com/releases/v5.5.0/css/all.css"
+          integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU"
+          crossorigin="anonymous">
+    <meta charset="UTF-8">
+    <title>Init</title>
+</head>
+<body>
+<div class="card" style="margin: 35px auto 0 auto; max-width: 500px;">
+    <div class="card-body">
+        <h1 class="display-4">Initialisation</h1>
+        <hr/>
+        <form>
+            <div class="form-group">
+                <label for="project-name">Projekt name</label>
+                <input class="form-control"
+                       id="project-name"
+                       placeholder="My sample project">
+            </div>
+
+            <div class="form-group">
+                <label for="patabase-path">Absolute database path</label>
+                <input class="form-control"
+                       id="database-path"
+                       placeholder="/Users/maxmustermann/Documents/">
+                <small class="form-text text-muted">Select the absolute Path where your SQLLite-DB will
+                    be stored. <span class="text-danger">Start and stop your path with a slash!</span> (e. g. <b>/Users/maxmustermann/Documents/</b>)
+                </small>
+            </div>
+
+            <hr/>
+            <h4>Default language</h4>
+            <div class="custom-control custom-switch">
+                <input type="checkbox" class="custom-control-input" id="customSwitch1" checked disabled>
+                <label class="custom-control-label" for="customSwitch1">use English</label>
+            </div>
+            <div class="form-row">
+                <div class="form-group col-md-4">
+                    <label for="project">Code</label>
+                    <input class="form-control"
+                           placeholder="en_EN"
+                           value="en_EN"
+                           id="lang-code"
+                           disabled>
+                    <small class="form-text text-muted">Use format <b>en_EN</b></small>
+                </div>
+                <div class="form-group col-md-8">
+                    <label for="project">Name</label>
+                    <input class="form-control"
+                           id="lang-name"
+                           placeholder="English"
+                           value="English"
+                           disabled>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group col-md-12">
+                    <label for="project">Image URL</label>
+                    <input class="form-control"
+                           id="lang-img"
+                           placeholder="https://www.free-country-flags.com/countries/United_Kingdom/1/medium/United_Kingdom.png"
+                           value="https://www.free-country-flags.com/countries/United_Kingdom/1/medium/United_Kingdom.png"
+                           disabled
+                    >
+                    <small class="form-text text-muted">
+                        Use free flag image URLs from <a href="https://www.free-country-flags.com/" target="_blank"><i class="fas fa-external-link-alt"></i> www.free-country-flags.com</a>
+                    </small>
+                </div>
+            </div>
+
+            <button type="button" class="btn btn-primary" id="init-submit-button">Submit</button>
+        </form>
+    </div>
+</div>
+
+<script src="{{ url_for('static', filename='js/dependencies/jquery-3.3.1.min.js') }}"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='js/init.js') }}"></script>
+
+</body>
+</html>

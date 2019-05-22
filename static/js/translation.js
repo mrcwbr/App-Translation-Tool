@@ -73,12 +73,6 @@ $(".copy-to-clipboard").click(function (e) {
     document.execCommand("copy");
     document.body.removeChild(tempInput);
 
-    /*let tf = $("#hidden-identifier-"+id);
-
-    tf.select();
-
-    document.execCommand("copy");*/
-
-    /* Alert the copied text */
+    // Show Alert 
     showDefaultAlert("alert-success", "Identifier copied.");
 });
