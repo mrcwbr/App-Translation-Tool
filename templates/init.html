@@ -41,39 +41,9 @@
                 <input type="checkbox" class="custom-control-input" id="customSwitch1" checked disabled>
                 <label class="custom-control-label" for="customSwitch1">use English</label>
             </div>
-            <div class="form-row">
-                <div class="form-group col-md-4">
-                    <label for="project">Code</label>
-                    <input class="form-control"
-                           placeholder="en_EN"
-                           value="en_EN"
-                           id="lang-code"
-                           disabled>
-                    <small class="form-text text-muted">Use format <b>en_EN</b></small>
-                </div>
-                <div class="form-group col-md-8">
-                    <label for="project">Name</label>
-                    <input class="form-control"
-                           id="lang-name"
-                           placeholder="English"
-                           value="English"
-                           disabled>
-                </div>
-            </div>
-            <div class="form-row">
-                <div class="form-group col-md-12">
-                    <label for="project">Image URL</label>
-                    <input class="form-control"
-                           id="lang-img"
-                           placeholder="https://www.free-country-flags.com/countries/United_Kingdom/1/medium/United_Kingdom.png"
-                           value="https://www.free-country-flags.com/countries/United_Kingdom/1/medium/United_Kingdom.png"
-                           disabled
-                    >
-                    <small class="form-text text-muted">
-                        Use free flag image URLs from <a href="https://www.free-country-flags.com/" target="_blank"><i class="fas fa-external-link-alt"></i> www.free-country-flags.com</a>
-                    </small>
-                </div>
-            </div>
+
+            {% include 'components/add-language-form.html' %}
+
 
             <button type="button" class="btn btn-primary" id="init-submit-button">Submit</button>
         </form>

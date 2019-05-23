@@ -1,6 +1,7 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, jsonify
 import yaml
 import io
+import validators
 from helpers.database import db
 from model.models import Project, Identifier, Component, LanguageProjectRelation, Translation, Language
 
@@ -23,8 +24,7 @@ def get_db_path():
             yaml_content = yaml.safe_load(stream)
             db_path = yaml_content['database']['absolute-path']
             return db_path
-    except Exception as e:
-        print(e)
+    except:
         return None
 
 
@@ -89,23 +89,53 @@ def init_translation_tool():
     # Init DB
     init_db()
 
-    # Create DB
+    # Create DB and Project
     db.create_all()
+    p = Project(name=project_name)
+    db.session.add(p)
+    db.session.commit()
+
+    __add_language(lang_code, lang_name, lang_img, p, True)
+
+    return '', 204
+
+
+@app.route('/language', methods=['POST'])
+def language_route():
+    lang_code = request.form.get('langCode')
+    lang_name = request.form.get('langName')
+    lang_img = request.form.get('langImg')
+
+    res = __add_language(lang_code, lang_name, lang_img, Project.query.first(), False)
+    if res is None:
+        return '', 204
+    else:
+        return jsonify({'msg': res}), 400
+
+
+def __add_language(lang_code, lang_name, lang_img, project, is_default):
+    if len(lang_code) != 5:
+        return 'Invalid Language Code'
+
+    if len(lang_name) < 2:
+        return 'Invalid Language Name'
+
+    if not validators.url(lang_img):
+        return 'Invalid image URL'
+
     lang = Language(code=lang_code,
                     name=lang_name,
                     flag_image_link=lang_img)
 
-    p = Project(name=project_name)
-
-    lp_rel = LanguageProjectRelation(project_id=p.id, lang_code=lang.code, is_default=True)
+    lp_rel = LanguageProjectRelation(project_id=project.id, lang_code=lang.code, is_default=is_default)
 
     lang.projects.append(lp_rel)
-    p.languages.append(lp_rel)
+    project.languages.append(lp_rel)
 
-    db.session.add_all([lang, p])
+    db.session.add(lang)
     db.session.commit()
 
-    return '', 204
+    return None
 
 
 @app.errorhandler(404)
