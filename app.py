@@ -1,12 +1,10 @@
 from os import getenv
-
 from flask import Flask, render_template, request, jsonify
 import yaml
 import io
 import validators
 from helpers.database import db
 from model.models import Project, Identifier, Component, LanguageProjectRelation, Translation, Language
-
 from route.component import comp  # Imported object import must be a other name than file
 from route.identifier import ident
 from route.translation import trans
@@ -19,22 +17,6 @@ app.register_blueprint(ident)
 app.register_blueprint(trans)
 app.register_blueprint(exp)
 
-
-# def get_db_path():
-#     try:
-#         with open("config.yml", 'r') as stream:
-#             yaml_content = yaml.safe_load(stream)
-#             db_path = yaml_content['database']['absolute-path']
-#             return db_path
-#     except:
-#         return None
-#
-#
-# __abs_db_path = get_db_path()
-#
-#
-# def init_db():
-
 custom_db_uri = getenv('CUSTOM_DB_URI', None)
 if custom_db_uri is None:
     raise Exception('CUSTOM_DB_URI not preset, set this value as a env var')
@@ -43,31 +25,21 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SQLALCHEMY_DATABASE_URI'] = custom_db_uri
 db.init_app(app)
 
-# def init_required():
-#     return render_template('init.html')
-#
-#
-# if __abs_db_path is not None:
-#     init_db()
-
 
 @app.route('/')
 def root():
-    #if get_db_path() is None:
-    #    return init_required()
-
-    p = Project.query.first()
+    p = Project.query.first()  # TODO check if Project is none
     number_of_identifiers = len(Identifier.query.filter_by(project_id=p.id).all())
     number_of_components = len(Component.query.filter_by(project_id=p.id).all())
     number_of_languages = len(LanguageProjectRelation.query.filter(LanguageProjectRelation.project_id == p.id).all())
     languages = p.languages
 
-    for l in languages:
-        translations = Translation.query.filter(Translation.language_code == l.lang_code,
+    for lang in languages:
+        translations = Translation.query.filter(Translation.language_code == lang.lang_code,
                                                 Translation.identifier.has(project_id=p.id)).all()
 
-        l.last_update = None if len(translations) == 0 else max(t.timestamp for t in translations)
-        l.translated_percentage = 0 if number_of_identifiers == 0 else round(len(translations) * 100 / number_of_identifiers)
+        lang.last_update = None if len(translations) == 0 else max(t.timestamp for t in translations)
+        lang.translated_percentage = 0 if number_of_identifiers == 0 else round(len(translations) * 100 / number_of_identifiers)
 
     return render_template('root.html',
                            project=p,
@@ -80,7 +52,6 @@ def root():
 @app.route('/init', methods=['POST'])
 def init_translation_tool():
     project_name = request.form.get('projectName')
-    global __abs_db_path
     __abs_db_path = request.form.get('absDBPath')
     lang_code = request.form.get('langCode')
     lang_name = request.form.get('langName')
@@ -151,7 +122,4 @@ def page_not_found(e):
 
 
 if __name__ == '__main__':
-    app.run()
-
-
-
+    app.run(host='0.0.0.0')

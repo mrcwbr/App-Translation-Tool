@@ -4,7 +4,6 @@
 
 {% block head %}
     {{ super() }}
-    <!--other stuff here-->
 {% endblock %}
 
 {% block content %}
@@ -67,7 +66,7 @@
                             {% endif %}
                         </h5>
                         <p class="card-text">
-{#               TODO check this             Last update: <b>{{ l.last_update.strftime('%Y-%m-%d %H:%M:%S') if l.last_update else 'no data found' }}</b>#}
+                          Last update: <b>{{ l.last_update if l.last_update else 'no data found' }}</b>
                         </p>
                         <div class="progress mb-3">
                             <div class="progress-bar progress-bar-striped {{ 'greenBgColor' if l.translated_percentage == 100 else 'redBgColor' }}"

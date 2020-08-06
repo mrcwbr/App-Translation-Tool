@@ -1,7 +1,5 @@
-# Installation
+# Run via Docker
 
-1. Install Python 3: https://www.python.org/downloads/
-2. Download or clone the repository
-3. Navigate your Terminal to the project folder `cd /users/maxmustermamn/myproject`
-4. Use pip to install the dependencies `pip install`
-5. Start the app `python flask run`
+1. Install Docker-Desktop
+2. run `docker run -d -e CUSTOM_DB_URI=YOUR_MYSQL_URI --name app-translation-tool -p 5000:5000 mrcwbr/app-translation-tool`
+3. replace YOUR_MYSQL_URI with our specific uri
