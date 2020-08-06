@@ -1,3 +1,5 @@
+from os import getenv
+
 from flask import Flask, render_template, request, jsonify
 import yaml
 import io
@@ -18,38 +20,41 @@ app.register_blueprint(trans)
 app.register_blueprint(exp)
 
 
-def get_db_path():
-    try:
-        with open("config.yml", 'r') as stream:
-            yaml_content = yaml.safe_load(stream)
-            db_path = yaml_content['database']['absolute-path']
-            return db_path
-    except:
-        return None
+# def get_db_path():
+#     try:
+#         with open("config.yml", 'r') as stream:
+#             yaml_content = yaml.safe_load(stream)
+#             db_path = yaml_content['database']['absolute-path']
+#             return db_path
+#     except:
+#         return None
+#
+#
+# __abs_db_path = get_db_path()
+#
+#
+# def init_db():
 
+custom_db_uri = getenv('CUSTOM_DB_URI', None)
+if custom_db_uri is None:
+    raise Exception('CUSTOM_DB_URI not preset, set this value as a env var')
 
-__abs_db_path = get_db_path()
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+app.config['SQLALCHEMY_DATABASE_URI'] = custom_db_uri
+db.init_app(app)
 
-
-def init_db():
-    app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-    app.config[
-        'SQLALCHEMY_DATABASE_URI'] = "sqlite:////" + __abs_db_path + 'translation.db?check_same_thread=False'
-    db.init_app(app)
-
-
-def init_required():
-    return render_template('init.html')
-
-
-if __abs_db_path is not None:
-    init_db()
+# def init_required():
+#     return render_template('init.html')
+#
+#
+# if __abs_db_path is not None:
+#     init_db()
 
 
 @app.route('/')
 def root():
-    if get_db_path() is None:
-        return init_required()
+    #if get_db_path() is None:
+    #    return init_required()
 
     p = Project.query.first()
     number_of_identifiers = len(Identifier.query.filter_by(project_id=p.id).all())
@@ -87,7 +92,7 @@ def init_translation_tool():
         yaml.dump(data, outfile, default_flow_style=False, allow_unicode=True)
 
     # Init DB
-    init_db()
+    # init_db()
 
     # Create DB and Project
     db.create_all()
