@@ -1,7 +1,5 @@
 from os import getenv
 from flask import Flask, render_template, request, jsonify
-import yaml
-import io
 import validators
 from helpers.database import db
 from model.models import Project, Identifier, Component, LanguageProjectRelation, Translation, Language
@@ -39,7 +37,8 @@ def root():
                                                 Translation.identifier.has(project_id=p.id)).all()
 
         lang.last_update = None if len(translations) == 0 else max(t.timestamp for t in translations)
-        lang.translated_percentage = 0 if number_of_identifiers == 0 else round(len(translations) * 100 / number_of_identifiers)
+        lang.translated_percentage = 0 if number_of_identifiers == 0 else round(len(translations) * 100
+                                                                                / number_of_identifiers)
 
     return render_template('root.html',
                            project=p,
@@ -58,9 +57,9 @@ def init_translation_tool():
     lang_img = request.form.get('langImg')
 
     # write the yml
-    data = {'database': {'absolute-path': str(__abs_db_path)}}
-    with io.open('config.yml', 'w', encoding='utf8') as outfile:
-        yaml.dump(data, outfile, default_flow_style=False, allow_unicode=True)
+    # data = {'database': {'absolute-path': str(__abs_db_path)}}
+    # with io.open('config.yml', 'w', encoding='utf8') as outfile:
+    # yaml.dump(data, outfile, default_flow_style=False, allow_unicode=True)
 
     # Init DB
     # init_db()
